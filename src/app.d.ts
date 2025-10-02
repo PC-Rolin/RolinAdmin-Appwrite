@@ -1,4 +1,4 @@
-import type { Account, Client, Models, TablesDB } from "appwrite";
+import type { Account, Models, TablesDB } from "appwrite";
 
 declare global {
 	type Preferences = {}
@@ -8,11 +8,6 @@ declare global {
 			user: Models.User<Preferences> | undefined
 			account: Account
 			db: TablesDB
-		}
-		interface PageData {
-			aw: {
-				client: Client
-			}
 		}
 	}
 }
