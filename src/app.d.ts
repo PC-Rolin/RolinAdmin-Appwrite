@@ -1,7 +1,9 @@
 import type { Account, Models, TablesDB } from "appwrite";
 
 declare global {
-	type Preferences = {}
+	type Preferences = {
+		dark: boolean | "true" | "false" | undefined
+	}
 
 	namespace App {
 		interface Locals {

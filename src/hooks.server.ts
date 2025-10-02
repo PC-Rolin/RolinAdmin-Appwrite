@@ -14,5 +14,10 @@ export const handle: Handle = async ({ resolve, event }) => {
     event.locals.user = undefined
   }
 
-  return resolve(event)
+  return resolve(event, {
+    transformPageChunk({ html }) {
+      const dark = event.locals.user ? event.locals.user.prefs.dark === "true" : true
+      return html.replace('<html lang="en">', `<html lang="en" ${dark ? 'class="dark"' : ''}>`)
+    }
+  })
 }

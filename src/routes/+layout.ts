@@ -6,6 +6,7 @@ export const load: LayoutLoad = async ({ data }) => {
   const client = createClient(data.session)
 
   return {
+    user: data.user,
     aw: {
       client,
       avatars: new Avatars(client)
