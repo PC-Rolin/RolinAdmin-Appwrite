@@ -1,9 +1,12 @@
-import { type Client, type Models, TablesDB } from "appwrite";
+import type { Account, Client, Models, TablesDB } from "appwrite";
 
 declare global {
+	type Preferences = {}
+
 	namespace App {
 		interface Locals {
-			user: Models.User | undefined
+			user: Models.User<Preferences> | undefined
+			account: Account
 			db: TablesDB
 		}
 		interface PageData {
