@@ -1,0 +1,148 @@
+{
+    "projectId": "68d79979001deac69d55",
+    "projectName": "RolinAdmin",
+    "settings": {
+        "services": {
+            "account": true,
+            "avatars": true,
+            "databases": true,
+            "locale": true,
+            "health": true,
+            "storage": true,
+            "teams": true,
+            "users": true,
+            "sites": true,
+            "functions": true,
+            "graphql": true,
+            "messaging": true
+        },
+        "auth": {
+            "methods": {
+                "jwt": true,
+                "phone": true,
+                "invites": true,
+                "anonymous": true,
+                "email-otp": true,
+                "magic-url": true,
+                "email-password": true
+            },
+            "security": {
+                "duration": 31536000,
+                "limit": 0,
+                "sessionsLimit": 10,
+                "passwordHistory": 0,
+                "passwordDictionary": false,
+                "personalDataCheck": false,
+                "sessionAlerts": false,
+                "mockNumbers": []
+            }
+        }
+    },
+    "sites": [
+        {
+            "$id": "68de7b450011b940c2e4",
+            "name": "RolinAdmin-Appwrite",
+            "enabled": true,
+            "logging": true,
+            "framework": "sveltekit",
+            "timeout": 30,
+            "installCommand": "npm install",
+            "buildCommand": "npm run build",
+            "outputDirectory": "./build",
+            "specification": "s-1vcpu-512mb",
+            "buildRuntime": "node-22",
+            "adapter": "ssr",
+            "fallbackFile": "",
+            "path": "sites/RolinAdmin-Appwrite"
+        }
+    ],
+    "tablesDB": [
+        {
+            "$id": "rolinadmin",
+            "name": "RolinAdmin",
+            "enabled": true
+        }
+    ],
+    "tables": [
+        {
+            "$id": "daily",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "rolinadmin",
+            "name": "Daily",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "ticket",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": 100000,
+                    "max": 999999,
+                    "default": null
+                },
+                {
+                    "key": "agent",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 20,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "completedBy",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 20,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "prio",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": 1,
+                    "max": 3,
+                    "default": null
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "customers",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "rolinadmin",
+            "name": "Customers",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "wticket",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807,
+                    "default": null
+                }
+            ],
+            "indexes": []
+        }
+    ]
+}
