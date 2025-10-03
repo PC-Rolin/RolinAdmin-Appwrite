@@ -1,4 +1,5 @@
 export * as Avatar from "./avatar"
+export * as Breadcrumb from "./breadcrumb"
 export { Button } from "./button"
 export * as Card from "./card"
 export * as DropdownMenu from "./dropdown-menu"
