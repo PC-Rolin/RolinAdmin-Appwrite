@@ -4,7 +4,9 @@ import { redirect } from "@sveltejs/kit";
 
 export const load: LayoutServerLoad = async ({ locals, url, cookies }) => {
   if (locals.user) {
-    if (url.pathname.startsWith("/auth")) redirect(302, "/app")
+    if (!locals.user.emailVerification && url.pathname !== "/auth/verify-email") {
+      // redirect(302, "/auth/verify-email")
+    }
   } else {
     if (!url.pathname.startsWith("/auth")) redirect(302, "/auth")
   }

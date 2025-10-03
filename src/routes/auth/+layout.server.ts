@@ -5,7 +5,7 @@ import { AppwriteException } from "appwrite";
 export const load: LayoutServerLoad = async ({ locals, url }) => {
   try {
     locals.user = await locals.account.get()
-    redirect(302, "/app")
+    if (locals.user.emailVerification) redirect(302, "/app")
   } catch (err) {
     if (err instanceof AppwriteException) {
       switch (err.type) {
