@@ -1,38 +1,18 @@
 import { Client, Users } from 'node-appwrite';
 
 /** @param {import("../../types").Context} context */
-const deleteUser = async ({ req, res, log, error }) => {
-  // You can use the Appwrite SDK to interact with other services
-  // For this example, we're using the Users service
-
+export default async context => {
   const client = new Client()
     .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers['x-appwrite-key'] ?? '');
-  const users = new Users(client);
+    .setKey(context.req.headers["x-appwrite-key"])
+  ;
 
-  try {
-    const response = await users.list();
-    // Log messages and errors to the Appwrite Console
-    // These logs won't be seen by your end users
-    log(`Total users: ${response.total}`);
-  } catch(err) {
-    error("Could not list users: " + err.message);
+  const services = {
+    users: new Users(client)
   }
 
-  // The req object contains the request data
-  if (req.path === "/ping") {
-    // Use res object to respond with text(), json(), or binary()
-    // Don't forget to return a response!
-    return res.text("Pong");
-  }
+  const user = context.req.bodyJson
 
-  return res.json({
-    motto: "Build like a team of hundreds_",
-    learn: "https://appwrite.io/docs",
-    connect: "https://appwrite.io/discord",
-    getInspired: "https://builtwith.appwrite.io",
-  });
-};
-
-export default deleteUser
+  context.log(JSON.stringify(user))
+}
