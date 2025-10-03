@@ -147,23 +147,19 @@
     ],
     "functions": [
         {
-            "$id": "68dfb9360036600e58e6",
+            "$id": "68dfe9e100316ecad56f",
+            "execute": [],
             "name": "delete-user",
-            "runtime": "node-16.0",
-            "specification": "s-0.5vcpu-512mb",
-            "execute": [
-                "any"
-            ],
-            "events": [],
-            "scopes": [
-                "users.read"
-            ],
-            "schedule": "",
-            "timeout": 15,
             "enabled": true,
             "logging": true,
-            "entrypoint": "src/main.js",
+            "runtime": "node-16.0",
+            "scopes": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "src/index.js",
             "commands": "npm install",
+            "specification": "s-0.5vcpu-512mb",
             "path": "functions/delete-user"
         }
     ]
