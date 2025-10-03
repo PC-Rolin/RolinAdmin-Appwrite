@@ -37,7 +37,7 @@
             <Sidebar.Menu>
               {#each data.sidebar.items as item}
                 <Sidebar.MenuItem>
-                  <Sidebar.MenuButton>
+                  <Sidebar.MenuButton isActive={item.href === page.url.pathname}>
                     {#snippet child({ props })}
                       {@const Icon = item.icon}
                       <a {...props} href={item.href}>
@@ -57,7 +57,7 @@
             <Sidebar.Menu>
               {#each data.sidebar.admin as item}
                 <Sidebar.MenuItem>
-                  <Sidebar.MenuButton>
+                  <Sidebar.MenuButton isActive={item.href === page.url.pathname}>
                     {#snippet child({ props })}
                       {@const Icon = item.icon}
                       <a {...props} href={item.href}>

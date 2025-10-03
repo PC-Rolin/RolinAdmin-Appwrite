@@ -32,6 +32,8 @@
   "dependencies": {
     "appwrite": "^20.1.0",
     "node-appwrite": "^19.1.0",
+    "wticket-api": "^0.0.5",
+    "wticket-bot": "^0.0.7",
     "zod": "^4.1.11"
   }
 }
