@@ -154,10 +154,12 @@
             "logging": true,
             "runtime": "node-16.0",
             "scopes": [],
-            "events": [],
+            "events": [
+                "users.*.delete"
+            ],
             "schedule": "",
             "timeout": 15,
-            "entrypoint": "src/index.js",
+            "entrypoint": "src/main.js",
             "commands": "npm install",
             "specification": "s-0.5vcpu-512mb",
             "path": "functions/delete-user"
