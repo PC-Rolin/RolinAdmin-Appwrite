@@ -1,5 +1,6 @@
 import { Client, Users } from 'node-appwrite';
 
+// noinspection JSUnusedGlobalSymbols
 /** @param {import("../../types").Context} context */
 export default async context => {
   const client = new Client()
