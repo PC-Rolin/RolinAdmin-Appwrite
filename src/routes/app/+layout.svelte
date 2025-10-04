@@ -23,7 +23,7 @@
   </div>
 {/snippet}
 
-<Sidebar.Provider bind:open>
+<Sidebar.Provider class="h-full" bind:open>
   <Sidebar.Root collapsible="icon">
     {#if open}
       <Sidebar.Header class="p-3">
