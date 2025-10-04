@@ -1,6 +1,7 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Input, Table, Avatar } from "$lib/components/ui"
+  import { Input, Table, Avatar, Badge, DropdownMenu } from "$lib/components/ui"
+  import { X, ChevronDown } from "@lucide/svelte"
   import * as daily from "$lib/remote/daily.remote"
   import * as wticket from "$lib/remote/wticket.remote"
   import * as customers from "$lib/remote/customers.remote"
@@ -8,8 +9,11 @@
   import { onMount } from "svelte";
   import type { RealtimeResponseEvent, Models } from "appwrite";
   import type { Daily } from "$lib/appwrite/types";
+  import { Select } from "$lib/components/form";
 
   let { data } = $props()
+
+  const profiles = await users.list()
 
   onMount(() => {
     function isUpdateResponse(response: RealtimeResponseEvent<unknown>): response is RealtimeResponseEvent<Daily & Models.Row> {
@@ -42,7 +46,34 @@
 </script>
 
 <div class="flex gap-2">
-
+  <Badge variant={myTickets ? "default" : "outline"} class="py-1 px-2 rounded-full cursor-pointer select-none" onclick={() => myTickets = !myTickets}>
+    Mijn tickets
+  </Badge>
+  {#if data.user?.labels.includes("admin")}
+    <div class="flex divide-x">
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+          <Badge variant={ticketsFilter ? "default" : "outline"} class={["py-1 px-2 rounded-full cursor-pointer", ticketsFilter && "rounded-r-none"]}>
+            Tickets van
+            {profiles.find(profile => profile.$id === ticketsFilter)?.name}
+            <ChevronDown/>
+          </Badge>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Label>Tickets van</DropdownMenu.Label>
+          <Select value={ticketsFilter} options={profiles.map(profile => ({
+            label: profile.name,
+            value: profile.$id
+          }))} onValueChange={value => ticketsFilter = value}/>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+      {#if ticketsFilter}
+        <Badge class="rounded-l-none rounded-r-full cursor-pointer" onclick={() => ticketsFilter = undefined}>
+          <X/>
+        </Badge>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <Table.Root>
@@ -86,21 +117,27 @@
             </div>
           </Table.Cell>
           <Table.Cell>
-            {#if item.agent}
-              {#await users.get(item.agent) then user}
-                <span class="flex items-center gap-2">
-                  <Avatar.Root class="size-8">
-                    <Avatar.Image src={data.aw.avatars.getInitials({ name: user.name })}/>
-                  </Avatar.Root>
-                  {#if editingTicket === item.$id && data.user?.labels.includes("admin") && !item.completedBy}
-                    <span>{user.name}</span>
-                  {:else}
-                    <span>{user.name}</span>
-                  {/if}
-                </span>
-              {/await}
+            {@const user = profiles.find(profile => profile.$id === item.agent)}
+            {#if item.agent && user}
+              <span class="flex items-center gap-2">
+                <Avatar.Root class="size-8">
+                  <Avatar.Image src={data.aw.avatars.getInitials({ name: user.name })}/>
+                </Avatar.Root>
+                {#if editingTicket === item.$id && data.user?.labels.includes("admin") && !item.completedBy}
+                  <Select allowDeselect options={profiles.map(profile => ({
+                    label: profile.name,
+                    value: profile.$id
+                  }))} value={item.agent} onValueChange={() => {}}/>
+                  <span>{user.name}</span>
+                {:else}
+                  <span>{user.name}</span>
+                {/if}
+              </span>
             {:else if editingTicket === item.$id && data.user?.labels.includes("admin")}
-              <span>Niet toegewezen</span>
+              <Select options={profiles.map(profile => ({
+                label: profile.name,
+                value: profile.$id
+              }))}/>
             {/if}
           </Table.Cell>
           <Table.Cell class={item.prio === 1 ? "text-destructive" : item.prio === 2 ? "text-yellow-400" : item.prio === 3 ? "text-green-600" : undefined}>

@@ -9,3 +9,10 @@ export const get = query(z.string(), id => {
     userId: id
   })
 })
+
+export const list = query(async () => {
+  const { users } = createAdminClient()
+
+  const result = await users.list<Preferences>()
+  return result.users
+})
