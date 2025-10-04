@@ -152,8 +152,11 @@
             "name": "delete-user",
             "enabled": true,
             "logging": true,
-            "runtime": "node-16.0",
-            "scopes": [],
+            "runtime": "node-22",
+            "scopes": [
+                "rows.write",
+                "documents.write"
+            ],
             "events": [
                 "users.*.delete"
             ],
@@ -161,8 +164,26 @@
             "timeout": 15,
             "entrypoint": "src/main.js",
             "commands": "npm install",
-            "specification": "s-0.5vcpu-512mb",
+            "specification": "s-1vcpu-512mb",
             "path": "functions/delete-user"
+        },
+        {
+            "$id": "68e16fd60036d3ea345e",
+            "name": "ninja-webhook",
+            "runtime": "node-22",
+            "specification": "s-0.5vcpu-512mb",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "path": "functions/ninja-webhook"
         }
     ]
 }
