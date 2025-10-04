@@ -1,11 +1,39 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Input, Table } from "$lib/components/ui"
+  import { Input, Table, Avatar } from "$lib/components/ui"
   import * as daily from "$lib/remote/daily.remote"
   import * as wticket from "$lib/remote/wticket.remote"
   import * as customers from "$lib/remote/customers.remote"
+  import * as users from "$lib/remote/users.remote"
+  import { onMount } from "svelte";
+  import type { RealtimeResponseEvent, Models } from "appwrite";
+  import type { Daily } from "$lib/appwrite/types";
 
   let { data } = $props()
+
+  onMount(() => {
+    function isUpdateResponse(response: RealtimeResponseEvent<unknown>): response is RealtimeResponseEvent<Daily & Models.Row> {
+      return response.events.includes("databases.*.tables.*.rows.*.update")
+    }
+    function isCreateResponse(response: RealtimeResponseEvent<unknown>): response is RealtimeResponseEvent<Daily & Models.Row> {
+      return response.events.includes("databases.*.tables.*.rows.*.create")
+    }
+    function isDeleteResponse(response: RealtimeResponseEvent<unknown>): response is RealtimeResponseEvent<Daily & Models.Row> {
+      return response.events.includes("databases.*.tables.*.rows.*.delete")
+    }
+
+    return data.realtime.subscribe("databases.rolinadmin.tables.daily.rows", async response => {
+      if (isUpdateResponse(response)) {
+        const index = tickets.findIndex(ticket => ticket.$id === response.payload.$id)
+        tickets[index] = response.payload
+      } else if (isCreateResponse(response)) {
+        tickets = [response.payload, ...tickets]
+      } else if (isDeleteResponse(response)) {
+        const index = tickets.findIndex(ticket => ticket.$id === response.payload.$id)
+        tickets.splice(index, 1)
+      }
+    })
+  })
 
   let tickets = $state(await daily.list())
   let editingTicket = $state<string | undefined>(undefined)
@@ -57,8 +85,27 @@
               {/await}
             </div>
           </Table.Cell>
-          <Table.Cell>{item.agent}</Table.Cell>
-          <Table.Cell>{item.prio}</Table.Cell>
+          <Table.Cell>
+            {#if item.agent}
+              {#await users.get(item.agent) then user}
+                <span class="flex items-center gap-2">
+                  <Avatar.Root class="size-8">
+                    <Avatar.Image src={data.aw.avatars.getInitials({ name: user.name })}/>
+                  </Avatar.Root>
+                  {#if editingTicket === item.$id && data.user?.labels.includes("admin") && !item.completedBy}
+                    <span>{user.name}</span>
+                  {:else}
+                    <span>{user.name}</span>
+                  {/if}
+                </span>
+              {/await}
+            {:else if editingTicket === item.$id && data.user?.labels.includes("admin")}
+              <span>Niet toegewezen</span>
+            {/if}
+          </Table.Cell>
+          <Table.Cell class={item.prio === 1 ? "text-destructive" : item.prio === 2 ? "text-yellow-400" : item.prio === 3 ? "text-green-600" : undefined}>
+            {item.prio}
+          </Table.Cell>
           <Table.Cell>{item.status}</Table.Cell>
           <Table.Cell>{item.completedBy}</Table.Cell>
           <Table.Cell></Table.Cell>

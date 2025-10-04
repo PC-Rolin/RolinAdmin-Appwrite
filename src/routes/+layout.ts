@@ -2,6 +2,7 @@ import type { LayoutLoad } from './$types'
 import { createClient } from "$lib/appwrite";
 import { Avatars } from "appwrite";
 import type { Breadcrumb } from "$lib/types";
+import { Realtime } from "$lib/appwrite/realtime";
 
 export const load: LayoutLoad = async ({ data }) => {
   const client = createClient(data.session)
@@ -12,6 +13,7 @@ export const load: LayoutLoad = async ({ data }) => {
       client,
       avatars: new Avatars(client)
     },
-    breadcrumbs: [] as Breadcrumb[]
+    breadcrumbs: [] as Breadcrumb[],
+    realtime: new Realtime(client)
   }
 }

@@ -11,10 +11,10 @@
       return response.events.includes("users.*.update.prefs")
     }
 
-    const unsubscribe = data.aw.client.subscribe("account", response => {
-      if (isPreferencesResponse(response)) {
+    const unsubscribe = data.realtime.subscribe("account", payload => {
+      if (isPreferencesResponse(payload)) {
         const html = document.getElementsByTagName("html")[0]
-        const dark = response.payload.dark === "true"
+        const dark = payload.payload.dark === "true"
         html.setAttribute("class", dark ? "dark" : '')
       }
       invalidateAll()
