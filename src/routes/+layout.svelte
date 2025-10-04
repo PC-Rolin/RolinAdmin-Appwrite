@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { invalidateAll } from "$app/navigation";
   import type { RealtimeResponseEvent } from "appwrite";
+  import { Toaster } from "$lib/components/ui";
 
 	let { data, children } = $props()
 
@@ -23,5 +24,7 @@
     return () => unsubscribe()
   })
 </script>
+
+<Toaster/>
 
 {@render children()}
