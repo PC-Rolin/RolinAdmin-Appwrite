@@ -22,6 +22,8 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
     }
   }
 
-  redirect(302, "/app")
-  // if (locals.user.emailVerification) redirect(302, "/app")
+  if (locals.user) {
+    redirect(302, "/app")
+    // if (locals.user.emailVerification) redirect(302, "/app")
+  }
 }
