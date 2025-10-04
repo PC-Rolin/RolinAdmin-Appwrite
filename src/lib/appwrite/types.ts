@@ -30,3 +30,10 @@ export type ContactPerson = {
   email: string | null
   phone: string | null
 }
+
+export type System = {
+  ninja: number
+  package: number
+  hasSyncback: boolean | null
+  contactPerson: string | null
+}

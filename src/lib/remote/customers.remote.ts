@@ -2,7 +2,7 @@ import { getRequestEvent, query } from "$app/server";
 import { z } from "zod";
 import { type Models, Query } from "appwrite";
 import { error } from "@sveltejs/kit";
-import type { ContactPerson, Customer } from "$lib/appwrite/types";
+import type { ContactPerson, Customer, System } from "$lib/appwrite/types";
 
 export const list = query(async () => {
   const { locals } = getRequestEvent()
@@ -16,12 +16,15 @@ export const list = query(async () => {
 export const get = query(z.string(), async id => {
   const { locals } = getRequestEvent()
 
-  return locals.db.getRow<Customer & { contactPersons: (ContactPerson & Models.Row)[] } & Models.Row>({
+  return locals.db.getRow<Customer & {
+    contactPersons: (ContactPerson & Models.Row)[]
+    systems: (System & Models.Row)[]
+  } & Models.Row>({
     databaseId: "rolinadmin",
     tableId: "customers",
     rowId: id,
     queries: [
-      Query.select(["*", "contactPersons.*"])
+      Query.select(["*", "contactPersons.*", "systems.*"])
     ]
   })
 })

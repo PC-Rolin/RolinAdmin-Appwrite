@@ -34,6 +34,7 @@
   "dependencies": {
     "@sveltejs/adapter-node": "^5.3.3",
     "appwrite": "^20.1.0",
+    "ninja-api": "^0.0.17",
     "node-appwrite": "^19.1.0",
     "wticket-api": "^0.0.5",
     "wticket-bot": "^0.0.7",
