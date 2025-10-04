@@ -1,9 +1,15 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Badge, Card, Textarea } from "$lib/components/ui"
-  import { Mail, CalendarSync, RefreshCcwDot, X, Check, ReceiptEuro, MapPinHouse, StickyNote } from "@lucide/svelte"
+  import { Badge, Card, Input, Textarea } from "$lib/components/ui"
+  import { Mail, CalendarSync, RefreshCcwDot, X, Check, ReceiptEuro, MapPinHouse, StickyNote, ShieldUser, User, Phone, SearchX } from "@lucide/svelte"
 
   let { data } = $props()
+
+  let contactPersonSearch = $state("")
+  const contactPersons = $derived(contactPersonSearch === "" ?
+    data.customer.contactPersons ?? [] :
+    data.customer.contactPersons.filter(contactPerson => contactPerson.name.toLowerCase().includes(contactPersonSearch.toLowerCase()) ?? [])
+  )
 
   function formatAddress(street: string | null, houseNumber: string | null, postalCode: string | null, city: string | null) {
     const parts = []
@@ -144,7 +150,42 @@
     <Card.Header>
       <Card.Title class="flex gap-4 items-center">
         Contactpersonen
+        <Input bind:value={contactPersonSearch} placeholder="Zoeken..." class="w-64 ml-auto"/>
       </Card.Title>
     </Card.Header>
+    <Card.Content class={["flex flex-col gap-4", contactPersons.length === 0 && "w-full h-full items-center opacity-50 justify-center"]}>
+      {#each contactPersons as contactPerson (contactPerson.$id)}
+        <div class="flex gap-4 items-center bg-muted text-muted-foreground p-4 rounded-md">
+          <div class="flex items-center p-4 rounded-full bg-accent">
+            {#if contactPerson.isAdmin}
+              <ShieldUser/>
+            {:else}
+              <User/>
+            {/if}
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-lg text-foreground font-medium">{contactPerson.name}</h3>
+            {#if contactPerson.email}
+              <p class="flex gap-2 items-center">
+                <Mail class="size-4"/>
+                <a href="mailto:{contactPerson.email}" class="hover:underline">{contactPerson.email}</a>
+              </p>
+            {/if}
+            {#if contactPerson.phone}
+              <p class="flex gap-2 items-center">
+                <Phone class="size-4"/>
+                {contactPerson.phone}
+              </p>
+            {/if}
+          </div>
+        </div>
+      {:else}
+        <SearchX class="size-16"/>
+        <span class="-mb-3">Geen contactpersonen gevonden</span>
+        {#if data.customer.contactPersons.length === 0}
+          <span class="text-sm">Voeg een contactpersoon toe om te beginnen</span>
+        {/if}
+      {/each}
+    </Card.Content>
   </Card.Root>
 </div>

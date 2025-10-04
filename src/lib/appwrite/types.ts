@@ -23,3 +23,10 @@ export type Customer = {
   notes: string | null
   hasOffice: boolean | null
 }
+
+export type ContactPerson = {
+  name: string
+  isAdmin: boolean
+  email: string | null
+  phone: string | null
+}

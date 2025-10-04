@@ -38,7 +38,7 @@
 </Card.Root>
 
 <Tabs.Root value={page.url.pathname} class="mb-4">
-  <Tabs.List>
+  <Tabs.List class="w-full">
     <Tabs.Trigger value="/app/klanten/{params.id}">
       {#snippet child({ props })}
         <a {...props} href="/app/klanten/{params.id}">Info</a>
