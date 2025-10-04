@@ -14,7 +14,6 @@
   "devDependencies": {
     "@internationalized/date": "^3.9.0",
     "@lucide/svelte": "^0.544.0",
-    "@sveltejs/adapter-auto": "^6.0.0",
     "@sveltejs/kit": "^2.43.8",
     "@sveltejs/vite-plugin-svelte": "^6.0.0",
     "@tailwindcss/vite": "^4.0.0",
@@ -30,6 +29,7 @@
     "vite": "^7.0.4"
   },
   "dependencies": {
+    "@sveltejs/adapter-node": "^5.3.3",
     "appwrite": "^20.1.0",
     "node-appwrite": "^19.1.0",
     "wticket-api": "^0.0.5",

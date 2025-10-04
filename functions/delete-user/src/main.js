@@ -1,4 +1,4 @@
-import { Client, TablesDB, Models, Query } from 'node-appwrite';
+import { Client, TablesDB, Query } from 'node-appwrite';
 
 // noinspection JSUnusedGlobalSymbols
 /** @param {import("../../types").Context} context */
@@ -11,7 +11,7 @@ export default async context => {
 
   const db = new TablesDB(client)
 
-  const user = /** @type {Models.User<Preferences>} */ context.req.bodyJson
+  const user = /** @type {import("node-appwrite").Models.User<Preferences>} */ context.req.bodyJson
 
   await db.updateRows({
     databaseId: "rolinadmin",
