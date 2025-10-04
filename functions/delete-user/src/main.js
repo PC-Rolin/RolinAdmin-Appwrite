@@ -1,4 +1,4 @@
-import { Client, Users } from 'node-appwrite';
+import { Client, TablesDB, Models, Query } from 'node-appwrite';
 
 // noinspection JSUnusedGlobalSymbols
 /** @param {import("../../types").Context} context */
@@ -9,11 +9,27 @@ export default async context => {
     .setKey(context.req.headers["x-appwrite-key"])
   ;
 
-  const services = {
-    users: new Users(client)
-  }
+  const db = new TablesDB(client)
 
-  const user = context.req.bodyJson
+  const user = /** @type {Models.User<Preferences>} */ context.req.bodyJson
 
-  context.log(JSON.stringify(user))
+  await db.updateRows({
+    databaseId: "rolinadmin",
+    tableId: "daily",
+    data: {
+      agent: null
+    },
+    queries: [Query.equal("agent", user.$id)]
+  })
+
+  await db.updateRows({
+    databaseId: "rolinadmin",
+    tableId: "daily",
+    data: {
+      completedBy: null
+    },
+    queries: [Query.equal("completedBy", user.$id)]
+  })
+
+  return context.res.empty()
 }
