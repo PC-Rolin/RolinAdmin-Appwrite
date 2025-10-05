@@ -51,26 +51,28 @@
             </Sidebar.Menu>
           </Sidebar.GroupContent>
         </Sidebar.Group>
-        <Sidebar.Group class="mt-auto">
-          <Sidebar.GroupLabel>Admin</Sidebar.GroupLabel>
-          <Sidebar.GroupContent>
-            <Sidebar.Menu>
-              {#each data.sidebar.admin as item}
-                <Sidebar.MenuItem>
-                  <Sidebar.MenuButton isActive={item.href === page.url.pathname}>
-                    {#snippet child({ props })}
-                      {@const Icon = item.icon}
-                      <a {...props} href={item.href}>
-                        <Icon/>
-                        <span>{item.label}</span>
-                      </a>
-                    {/snippet}
-                  </Sidebar.MenuButton>
-                </Sidebar.MenuItem>
-              {/each}
-            </Sidebar.Menu>
-          </Sidebar.GroupContent>
-        </Sidebar.Group>
+        {#if data.user.labels.includes("admin")}
+          <Sidebar.Group class="mt-auto">
+            <Sidebar.GroupLabel>Admin</Sidebar.GroupLabel>
+            <Sidebar.GroupContent>
+              <Sidebar.Menu>
+                {#each data.sidebar.admin as item}
+                  <Sidebar.MenuItem>
+                    <Sidebar.MenuButton isActive={item.href === page.url.pathname}>
+                      {#snippet child({ props })}
+                        {@const Icon = item.icon}
+                        <a {...props} href={item.href}>
+                          <Icon/>
+                          <span>{item.label}</span>
+                        </a>
+                      {/snippet}
+                    </Sidebar.MenuButton>
+                  </Sidebar.MenuItem>
+                {/each}
+              </Sidebar.Menu>
+            </Sidebar.GroupContent>
+          </Sidebar.Group>
+        {/if}
       </Sidebar.Content>
       <Sidebar.Footer>
         <Sidebar.Menu>
