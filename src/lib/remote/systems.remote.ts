@@ -3,7 +3,6 @@ import { z } from "zod";
 import { createNinjaClient } from "$lib/server/ninja";
 import * as customers from "$lib/remote/customers.remote"
 import type { DeviceDetails } from "ninja-api";
-import type { System } from "$lib/appwrite/types";
 import type { Models } from "appwrite";
 
 export const list = query(z.string(), async id => {
@@ -12,7 +11,7 @@ export const list = query(z.string(), async id => {
 
   const dbSystems = customer.systems
   const ninjaSystems: DeviceDetails[] = []
-  const combinedSystems: (DeviceDetails & System & Models.Row)[] = []
+  const combinedSystems: (DeviceDetails & Databases["rolinadmin"]["systems"] & Models.Row)[] = []
 
   if (customer.ninjaOrganization) {
     const devices = await ninja.system.listDevicesDetailed({

@@ -1,19 +1,22 @@
 import type { LayoutLoad } from './$types'
-import { createClient } from "$lib/appwrite";
-import { Avatars } from "appwrite";
 import type { Breadcrumb } from "$lib/types";
 import { Realtime } from "$lib/appwrite/realtime";
+import { SharedClient } from "appwrite-sveltekit";
+import { PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_PROJECT } from "$env/static/public";
 
 export const load: LayoutLoad = async ({ data }) => {
-  const client = createClient(data.session)
+  const appwrite = new SharedClient(PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_PROJECT, {
+    cookies: {
+      get() {
+        return data.session
+      }
+    }
+  })
 
   return {
     user: data.user,
-    aw: {
-      client,
-      avatars: new Avatars(client)
-    },
+    aw: appwrite,
     breadcrumbs: [] as Breadcrumb[],
-    realtime: new Realtime(client)
+    realtime: new Realtime(appwrite.client)
   }
 }

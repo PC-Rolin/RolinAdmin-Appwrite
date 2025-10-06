@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   if (!userId || !secret) error(400)
 
-  await locals.account.updateVerification({
+  await locals.appwrite.account.raw.updateVerification({
     userId,
     secret
   })

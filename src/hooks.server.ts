@@ -1,15 +1,16 @@
-import type { Handle, HandleServerError } from "@sveltejs/kit";
-import { COOKIE, createClient } from "$lib/appwrite";
-import { Account, TablesDB } from "appwrite";
+import type { Handle } from "@sveltejs/kit";
+import { SharedClient } from "appwrite-sveltekit";
+import { PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_PROJECT } from "$env/static/public";
 
 export const handle: Handle = async ({ resolve, event }) => {
-  const client = createClient(event.cookies.get(COOKIE))
-
-  event.locals.account = new Account(client)
-  event.locals.db = new TablesDB(client)
+  event.locals.appwrite = new SharedClient(PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_PROJECT, {
+    cookies: {
+      get: event.cookies.get
+    }
+  })
 
   try {
-    event.locals.user = await event.locals.account.get()
+    event.locals.user = await event.locals.appwrite.account.get()
   } catch {
     event.locals.user = undefined
   }
@@ -20,10 +21,4 @@ export const handle: Handle = async ({ resolve, event }) => {
       return html.replace('<html lang="en">', `<html lang="en" ${dark ? 'class="dark"' : ''}>`)
     }
   })
-}
-
-export const handleServerError: HandleServerError = async ({ error, message }) => {
-  console.log(error)
-  console.log(message)
-
 }
