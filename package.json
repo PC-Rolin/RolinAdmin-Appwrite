@@ -14,13 +14,13 @@
   "devDependencies": {
     "@internationalized/date": "^3.9.0",
     "@lucide/svelte": "^0.544.0",
-    "@sveltejs/kit": "^2.43.8",
+    "@sveltejs/kit": "^2.44.0",
     "@sveltejs/vite-plugin-svelte": "^6.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "bits-ui": "^2.11.4",
     "clsx": "^2.1.1",
     "mode-watcher": "^1.1.0",
-    "svelte": "^5.39.8",
+    "svelte": "^5.39.9",
     "svelte-check": "^4.0.0",
     "svelte-sonner": "^1.0.5",
     "tailwind-merge": "^3.3.1",
@@ -34,6 +34,7 @@
   "dependencies": {
     "@sveltejs/adapter-node": "^5.3.3",
     "appwrite": "^20.1.0",
+    "generate-password": "^1.7.1",
     "ninja-api": "^0.0.17",
     "node-appwrite": "^19.1.0",
     "wticket-api": "^0.0.5",

@@ -19,23 +19,17 @@
               <div class="grid gap-3">
                 <Label for="email">Email</Label>
                 <Input
-                  name={auth.login.field("email")}
-                  value={auth.login.input?.email}
+                  {...auth.login.fields.email.as("email")}
                   id="email"
-                  type="email"
                   placeholder="support@pcrolin.nl"
                   required
                 />
-                {#if auth.login.issues?.email}
-                  {auth.login.issues.email}
-                {/if}
+                {auth.login.fields.email.issues()?.[0].message}
               </div>
               <div class="grid gap-3">
                 <Label for="password">Password</Label>
-                <Input name={auth.login.field("_password")} id="password" type="password" required/>
-                {#if auth.login.issues?._password}
-                  {auth.login.issues._password}
-                {/if}
+                <Input {...auth.login.fields._password.as("password")} id="password" required/>
+                {auth.login.fields._password.issues()?.[0].message}
               </div>
               <Button type="submit" class="w-full">Login</Button>
             </div>

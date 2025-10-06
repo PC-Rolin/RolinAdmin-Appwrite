@@ -32,8 +32,6 @@
       value: "5"
     }
   ]
-
-  console.log(data.systems)
 </script>
 
 {#snippet PackageIcon(systemPackage: System["package"])}
