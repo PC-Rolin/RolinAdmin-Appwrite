@@ -1,6 +1,6 @@
 <script lang="ts" generics="T">
   // noinspection ES6UnusedImports
-  import { Button, Card } from "$lib/components/ui";
+  import { Button, Card, Tabs } from "$lib/components/ui";
   import type { Customer } from "$lib/appwrite/types";
   import type { Models } from "appwrite";
   import type { Snippet } from "svelte";
@@ -38,5 +38,19 @@
       {/if}
     </Card.Title>
   </Card.Header>
-  <Card.Content></Card.Content>
+  <Card.Content>
+    {#if generatedResult}
+      {@render data(await generatedResult)}
+    {:else}
+      <Tabs.Root value="select">
+        <Tabs.List>
+          <Tabs.Trigger value="select">Selecteren</Tabs.Trigger>
+          <Tabs.Trigger value="fill">Invullen</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="select">
+
+        </Tabs.Content>
+      </Tabs.Root>
+    {/if}
+  </Card.Content>
 </Card.Root>
