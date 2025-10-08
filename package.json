@@ -34,7 +34,6 @@
   "dependencies": {
     "@sveltejs/adapter-node": "^5.3.3",
     "appwrite": "^20.1.0",
-    "appwrite-sveltekit": "file:../appwrite-sveltekit",
     "generate-password": "^1.7.1",
     "ninja-api": "^0.0.17",
     "node-appwrite": "^19.1.0",

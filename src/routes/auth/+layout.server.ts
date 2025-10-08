@@ -4,7 +4,7 @@ import { AppwriteException } from "appwrite";
 
 export const load: LayoutServerLoad = async ({ locals, url }) => {
   try {
-    locals.user = await locals.appwrite.account.get()
+    locals.user = await locals.account.get()
   } catch (err) {
     locals.user = undefined
     if (err instanceof AppwriteException) {
