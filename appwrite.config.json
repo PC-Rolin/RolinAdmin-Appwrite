@@ -67,7 +67,10 @@
         {
             "$id": "daily",
             "$permissions": [
-                "read(\"users\")"
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"label:admin\")"
             ],
             "databaseId": "rolinadmin",
             "name": "Daily",
@@ -140,6 +143,299 @@
                     "min": -9223372036854775808,
                     "max": 9223372036854775807,
                     "default": null
+                },
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "type",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "elements": [
+                        "Particulier",
+                        "Zakelijk"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "street",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "houseNumber",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "ninjaOrganization",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": 0,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "snelstartId",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": 0,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "postalCode",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "invoiceEmail",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "format": "email",
+                    "default": null
+                },
+                {
+                    "key": "wantsInvoice",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "invoiceInterval",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "elements": [
+                        "Maand",
+                        "Kwartaal",
+                        "Jaar"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "invoiceIncasso",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "city",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "notes",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 500,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "hasOffice",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "contactPersons",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "contactPersons",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "customer",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                },
+                {
+                    "key": "systems",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "systems",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "customer",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "wticket_unique",
+                    "type": "unique",
+                    "status": "available",
+                    "columns": [
+                        "wticket"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "name_unique",
+                    "type": "unique",
+                    "status": "available",
+                    "columns": [
+                        "name"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "contactPersons",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "rolinadmin",
+            "name": "Contact Persons",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "customer",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "customers",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "contactPersons",
+                    "onDelete": "cascade",
+                    "side": "child"
+                },
+                {
+                    "key": "isAdmin",
+                    "type": "boolean",
+                    "required": true,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "email",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "format": "email",
+                    "default": null
+                },
+                {
+                    "key": "phone",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 20,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "systems",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "rolinadmin",
+            "name": "Systems",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "customer",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "customers",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "systems",
+                    "onDelete": "cascade",
+                    "side": "child"
+                },
+                {
+                    "key": "ninja",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": 0,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "package",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "contactPerson",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "contactPersons",
+                    "relationType": "manyToOne",
+                    "twoWay": false,
+                    "twoWayKey": "68e16a4c003748ebf677",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                },
+                {
+                    "key": "hasSyncback",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": null
                 }
             ],
             "indexes": []
@@ -171,7 +467,7 @@
             "$id": "68e16fd60036d3ea345e",
             "name": "ninja-webhook",
             "runtime": "node-22",
-            "specification": "s-0.5vcpu-512mb",
+            "specification": "s-1vcpu-512mb",
             "execute": [
                 "any"
             ],
