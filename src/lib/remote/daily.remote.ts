@@ -3,13 +3,14 @@ import { type Models, Query } from "appwrite";
 import type { Daily } from "$lib/appwrite/types";
 import { z } from "zod";
 import { error } from "@sveltejs/kit";
+import { APPWRITE } from "$lib/appwrite/config";
 
 export const list = query(async () => {
   const { locals } = getRequestEvent()
 
   const result = await locals.db.listRows<Daily & Models.Row>({
-    databaseId: "rolinadmin",
-    tableId: "daily",
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.DAILY,
     queries: [Query.limit(1000)]
   })
 
@@ -27,8 +28,8 @@ export const update = command(z.object({
   const { locals } = getRequestEvent()
 
   await locals.db.updateRow<Daily & Models.Row>({
-    databaseId: "rolinadmin",
-    tableId: "daily",
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.DAILY,
     rowId: data.$id,
     data: data
   })
@@ -44,8 +45,8 @@ export const markAsCompleted = command(z.object({
   if (!completedBy) error(400, "You must be logged in to mark a daily as completed")
 
   await locals.db.updateRow<Daily & Models.Row>({
-    databaseId: "rolinadmin",
-    tableId: "daily",
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.DAILY,
     rowId: data.id,
     data: {
       completedBy
@@ -57,8 +58,8 @@ export const unmarkAsCompleted = command(z.string(), async id => {
   const { locals } = getRequestEvent()
 
   await locals.db.updateRow<Daily & Models.Row>({
-    databaseId: "rolinadmin",
-    tableId: "daily",
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.DAILY,
     rowId: id,
     data: {
       completedBy: null
@@ -70,8 +71,8 @@ export const remove = command(z.string(), async id => {
   const { locals } = getRequestEvent()
 
   await locals.db.deleteRow({
-    databaseId: "rolinadmin",
-    tableId: "daily",
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.DAILY,
     rowId: id
   })
 })
