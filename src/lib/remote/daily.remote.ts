@@ -1,5 +1,5 @@
-import { command, getRequestEvent, query } from "$app/server";
-import { type Models, Query } from "appwrite";
+import { command, form, getRequestEvent, query } from "$app/server";
+import { ID, type Models, Query } from "appwrite";
 import type { Daily } from "$lib/appwrite/types";
 import { z } from "zod";
 import { error } from "@sveltejs/kit";
@@ -74,5 +74,20 @@ export const remove = command(z.string(), async id => {
     databaseId: APPWRITE.DB,
     tableId: APPWRITE.DAILY,
     rowId: id
+  })
+})
+
+export const add = form(z.object({
+  ticket: z.coerce.number<string>().min(100000)
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.createRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.DAILY,
+    rowId: ID.unique(),
+    data: {
+      ticket: data.ticket
+    }
   })
 })

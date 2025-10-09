@@ -21,7 +21,7 @@ export const getTicket = query.batch(z.number(), async ids => {
     if (result.data) tickets.push(result.data)
   }))
 
-  return id => tickets.find(ticket => ticket.id === id)
+  return id => tickets.find(ticket => ticket.id === id)!
 })
 
 export const getRelation = query(z.string(), async searchName => {
