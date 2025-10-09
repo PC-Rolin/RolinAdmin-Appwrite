@@ -1,22 +1,25 @@
 <script lang="ts">
-  import { getContext } from "svelte";
-  import type { RemoteForm } from "@sveltejs/kit";
-  import { Input, Label } from "$lib/components/ui";
+  // noinspection ES6UnusedImports
+  import { Field } from "$lib/components/ui";
+  import type { RemoteFormField } from "@sveltejs/kit";
+  import { Input } from "$lib/components/ui";
   import type { HTMLInputAttributes } from "svelte/elements";
 
-  let { name, label, ...rest }: {
-    name: string
+  let { field, label, as = "text", ...rest }: {
+    field: RemoteFormField<any>
     label?: string
-  } & HTMLInputAttributes = $props()
+    as?: "text" | "number" | "email" | "password" | "hidden"
+  } & Omit<HTMLInputAttributes, "files"> = $props()
 
   const id = $props.id()
-  const form = getContext<RemoteForm<any, any>>("form")
 </script>
 
-<div class="grid gap-2">
+<Field.Field aria-invalid={!!field.issues()}>
   {#if label}
-    <Label for={id}>{label}</Label>
+    <Field.Label for={id}>{label}</Field.Label>
   {/if}
-
-  <Input {...rest} {id} {...form.fields[name].as("text")}/>
-</div>
+  <Input {...rest} {id} {...field.as(as)}/>
+  {#each field.issues() ?? [] as issue}
+    <Field.Error>{issue.message}</Field.Error>
+  {/each}
+</Field.Field>

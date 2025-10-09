@@ -7,15 +7,19 @@ const forms = {
     dispatchEvent(new CustomEvent(EVENT.CLOSE_FORM))
   },
 
-  apply<T>(form: RemoteForm<any, T>, options?: {
+  apply<T extends { message: string }>(form: RemoteForm<any, T>, options?: {
     onSuccess?(result?: T): void
     onError?(): void
   }) {
-    return form.enhance(async ({ submit }) => {
+    return form.enhance(async context => {
       try {
-        await submit()
-        options?.onSuccess?.(form.result)
-        this.close()
+        await context.submit()
+        if (form.result?.message) {
+          context.form.reset()
+          toast.success(form.result.message)
+          options?.onSuccess?.(form.result)
+          this.close()
+        }
       } catch (error) {
         if (options?.onError) {
           options.onError()
