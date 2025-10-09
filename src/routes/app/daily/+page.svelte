@@ -1,7 +1,7 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Input, Table, Avatar, Badge, DropdownMenu, Button, buttonVariants, Field } from "$lib/components/ui"
-  import { X, ChevronDown, Trash2, Save, Pencil, Check, Plus } from "@lucide/svelte"
+  import { Input, Table, Avatar, Badge, DropdownMenu, Button, buttonVariants, Field, Tooltip } from "$lib/components/ui"
+  import { X, ChevronDown, Trash2, Save, Pencil, Check, Plus, ListCheck } from "@lucide/svelte"
   import * as daily from "$lib/remote/daily.remote"
   import * as wticket from "$lib/remote/wticket.remote"
   import * as customers from "$lib/remote/customers.remote"
@@ -181,6 +181,20 @@
       }
     }
   }
+
+  async function partialComplete(id: string) {
+    const ticket = tickets.find(item => item.$id === id)!
+    try {
+      await daily.update({
+        ...ticket,
+        agent: null,
+        prio: null
+      })
+      toast.success("Deeltaak gemarkeerd als klaar")
+    } catch (error) {
+      toast.error(String(error))
+    }
+  }
 </script>
 
 <div class="flex items-center gap-2 mb-4">
@@ -306,11 +320,31 @@
               }))} onValueChange={onAgentChange}/>
             {/if}
           </Table.Cell>
-          <Table.Cell class={item.prio === 1 ? "text-destructive" : item.prio === 2 ? "text-yellow-400" : item.prio === 3 ? "text-green-600" : undefined}>
+          <Table.Cell class={item.prio === 1 ? "text-destructive" : item.prio === 2 ? "text-orange-500" : item.prio === 3 ? "text-yellow-400" : item.prio === 4 ? "text-blue-300" : undefined}>
             {#if editingTicket === item.$id && data.user?.labels.includes("admin") && !item.completedBy}
-              <Select allowDeselect options={[{ label: "1", value: "1" }, { label: "2", value: "2" }, { label: "3", value: "3" }]} value={item.prio?.toString()} onValueChange={onPrioChange}/>
+              <Select allowDeselect options={[
+                { label: "1 Eerste werk uitvoeren", value: "1" },
+                { label: "2 Moet vandaag af", value: "2" },
+                { label: "3 Nice to have vandaag", value: "3" },
+                { label: "4 WOK of laag", value: "4" }
+              ]} value={item.prio?.toString()} onValueChange={value => onPrioChange(value)}/>
             {:else}
-              {item.prio}
+              <Tooltip.Provider delayDuration={0}>
+                <Tooltip.Root>
+                  <Tooltip.Trigger class="cursor-default">{item.prio}</Tooltip.Trigger>
+                  <Tooltip.Content>
+                    {#if item.prio === 1}
+                      Eerste werk uitvoeren
+                    {:else if item.prio === 2}
+                      Moet vandaag af
+                    {:else if item.prio === 3}
+                      Nice to have vandaag
+                    {:else if item.prio === 4}
+                      WOK of laag
+                    {/if}
+                  </Tooltip.Content>
+                </Tooltip.Root>
+              </Tooltip.Provider>
             {/if}
           </Table.Cell>
           <Table.Cell>
@@ -343,8 +377,11 @@
                     <Button title="Aanpassen" variant="outline" class="size-8 rounded-r-none" onclick={() => setTicket(item.$id)}>
                       <Pencil/>
                     </Button>
-                    <Button title="Markeren als voltooid" variant="outline" class={["size-8 text-green-600 hover:text-green-600", data.user?.labels.includes("admin") ? "rounded-none" : "rounded-r"]} onclick={() => markAsCompleted(item.$id)}>
+                    <Button title="Ticket markeren als voltooid" variant="outline" class="size-8 text-green-600 hover:text-green-600 rounded-none" onclick={() => markAsCompleted(item.$id)}>
                       <Check/>
+                    </Button>
+                    <Button title="Deeltaak markeren als voltooid" variant="outline" class={["size-8 text-orange-600 hover:text-orange-600", data.user?.labels.includes("admin") ? "rounded-none" : "rounded-r"]} onclick={() => partialComplete(item.$id)}>
+                      <ListCheck/>
                     </Button>
                     {#if data.user?.labels.includes("admin")}
                       <DropdownMenu.Root>

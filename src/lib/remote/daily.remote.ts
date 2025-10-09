@@ -21,7 +21,7 @@ export const update = command(z.object({
   $id: z.string(),
   ticket: z.number(),
   agent: z.string().nullable(),
-  prio: z.number().min(1).max(3).nullable(),
+  prio: z.number().nullable(),
   status: z.string().nullable(),
   completedBy: z.string().nullable(),
 }), async data => {
