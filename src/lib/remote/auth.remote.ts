@@ -22,3 +22,15 @@ export const login = form(z.object({
     path: "/"
   })
 })
+
+export const updateName = form(z.object({
+  name: z.string()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.account.updateName({
+    name: data.name
+  })
+
+  return { message: "Naam aangepast" }
+})

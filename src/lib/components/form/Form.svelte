@@ -1,18 +1,26 @@
-<script lang="ts" generics="T extends Record<string, string>">
+<script lang="ts" generics="T extends Record<string, string>, R extends Record<string, any>">
   // noinspection ES6UnusedImports
   import { Button, Field, Spinner } from "$lib/components/ui";
   import type { RemoteForm } from "@sveltejs/kit";
   import type { Snippet } from "svelte";
   import forms from "$lib/utils/forms";
 
-  let { form, children, remove = false }: {
-    form: RemoteForm<T, any> | Omit<RemoteForm<T, any>, "for">
+  let { form, children, remove = false, onSuccess, reset = true, disableSubmit = false }: {
+    form: RemoteForm<T, R> | Omit<RemoteForm<T, R>, "for">
     children: Snippet<[{ fields: typeof form.fields }]>
     remove?: boolean
+    onSuccess?(result: R): void
+    reset?: boolean
+    disableSubmit?: boolean
   } = $props()
 </script>
 
-<form {...forms.apply(form)}>
+<form {...forms.apply(form, {
+  reset,
+  onSuccess(result) {
+    if (onSuccess) onSuccess(result)
+  }
+})}>
   <Field.Set>
     <Field.Group>
       {@render children({ fields: form.fields })}
@@ -31,7 +39,7 @@
           {/if}
         </Button>
       {:else}
-        <Button type="submit" disabled={!!form.pending}>
+        <Button type="submit" disabled={!!form.pending || disableSubmit}>
           {#if form.pending}
             <Spinner/>
             Laden...
