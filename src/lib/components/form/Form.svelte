@@ -1,4 +1,4 @@
-<script lang="ts" generics="T extends Record<string, string>, R extends Record<string, any>">
+<script lang="ts" generics="T extends Record<string, string>, R extends Record<string, any> | void">
   // noinspection ES6UnusedImports
   import { Button, Field, Spinner } from "$lib/components/ui";
   import type { RemoteForm } from "@sveltejs/kit";

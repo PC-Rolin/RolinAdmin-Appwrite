@@ -1,6 +1,6 @@
-import type { Handle } from "@sveltejs/kit";
+import type { Handle, HandleServerError } from "@sveltejs/kit";
 import { COOKIE, createClient } from "$lib/appwrite";
-import { Account, TablesDB } from "appwrite";
+import { Account, AppwriteException, TablesDB } from "appwrite";
 
 export const handle: Handle = async ({ resolve, event }) => {
   const client = createClient(event.cookies.get(COOKIE))
@@ -20,4 +20,12 @@ export const handle: Handle = async ({ resolve, event }) => {
       return html.replace('<html lang="en">', `<html lang="en" ${dark ? 'class="dark"' : ''}>`)
     }
   })
+}
+
+export const handleError: HandleServerError = ({ error }) => {
+  if (error instanceof AppwriteException) {
+    if (error.type === "user_unauthorized") {
+      return { message: "Je hebt niet genoeg rechten om deze actie uit te voeren" }
+    }
+  }
 }

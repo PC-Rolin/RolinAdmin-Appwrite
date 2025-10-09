@@ -37,3 +37,15 @@ export type System = {
   hasSyncback: boolean | null
   contactPerson: string | null
 }
+
+export type PricelistCategory = {
+  name: string
+  order: string | null
+}
+
+export type PricelistPrice = {
+  name: string
+  price: number
+  priceZakelijk: number | null
+  comment: string
+}

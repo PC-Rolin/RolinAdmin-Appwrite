@@ -1,5 +1,5 @@
 import { EVENT } from "$lib/constants";
-import type { RemoteForm } from "@sveltejs/kit";
+import { isHttpError, type RemoteForm } from "@sveltejs/kit";
 import { toast } from "svelte-sonner";
 
 const forms = {
@@ -7,7 +7,7 @@ const forms = {
     dispatchEvent(new CustomEvent(EVENT.CLOSE_FORM))
   },
 
-  apply<T extends Record<string, any>>(form: RemoteForm<any, T> | Omit<RemoteForm<any, T>, "for">, options?: {
+  apply<T extends Record<string, any> | void>(form: RemoteForm<any, T> | Omit<RemoteForm<any, T>, "for">, options?: {
     onSuccess?(result: T): void
     onError?(): void
     reset?: boolean
@@ -31,7 +31,11 @@ const forms = {
         if (options?.onError) {
           options.onError()
         } else {
-          toast.error(String(error))
+          if (isHttpError(error)) {
+            toast.error(error.body.message)
+          } else {
+            toast.error(String(error))
+          }
         }
       }
     })

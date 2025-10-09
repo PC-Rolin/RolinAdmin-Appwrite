@@ -1,9 +1,10 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Sidebar, Separator, Breadcrumb, DropdownMenu, Avatar } from "$lib/components/ui"
+  import { Sidebar, Separator, Breadcrumb, DropdownMenu, Avatar, Button } from "$lib/components/ui"
   import { page } from "$app/state"
   import type { Models } from "appwrite"
   import { ChevronsUpDown, BadgeCheck, LogOut } from "@lucide/svelte";
+  import { GitHub } from "$lib/components/icons";
 
   let { data, children } = $props()
 
@@ -127,7 +128,7 @@
     {/if}
   </Sidebar.Root>
   <Sidebar.Inset>
-    <header class="flex h-16 shrink-0 items-center gap-2 border-b">
+    <header class="flex h-16 shrink-0 items-center gap-2 border-b pr-3">
       <div class="flex items-center gap-2 px-3">
         <Sidebar.Trigger />
         <Separator orientation="vertical" class="mr-2 h-4" />
@@ -150,6 +151,9 @@
           </Breadcrumb.List>
         </Breadcrumb.Root>
       </div>
+      <Button class="ml-auto" href="https://github.com/PC-Rolin/RolinAdmin" target="_blank">
+        <GitHub/>
+      </Button>
     </header>
     <div class="p-4 overflow-y-auto">
       {@render children()}

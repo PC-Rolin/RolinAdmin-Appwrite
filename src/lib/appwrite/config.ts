@@ -5,5 +5,7 @@ type AppwriteConfig = {
 export const APPWRITE = {
   DB: "rolinadmin",
   CUSTOMERS: "customers",
-  DAILY: "daily"
+  DAILY: "daily",
+  PRICELIST_PRICES: "pricelistPrices",
+  PRICELIST_CATEGORIES: "pricelistCategories"
 } as const satisfies AppwriteConfig
