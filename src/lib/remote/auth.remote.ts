@@ -34,3 +34,17 @@ export const updateName = form(z.object({
 
   return { message: "Naam aangepast" }
 })
+
+export const updatePassword = form(z.object({
+  _password: z.string(),
+  _oldPassword: z.string()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.account.updatePassword({
+    password: data._password,
+    oldPassword: data._oldPassword
+  })
+
+  return { message: "Wachtwoord aangepast" }
+})
