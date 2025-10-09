@@ -288,6 +288,8 @@
                       {:catch error}
                         <span class="text-primary opacity-75" title={error}>{relation.fullName}</span>
                       {/await}
+                    {:else}
+                      <span class="text-primary opacity-50">{ticket.searchName}</span>
                     {/if}
                   {/await}
                   <span>{ticket.description}</span>

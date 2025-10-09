@@ -28,5 +28,7 @@ export const getRelation = query(z.string(), async searchName => {
   const response = await api.common.listRelations({ searchKey: searchName })
   if (response.relation) {
     return api.relation.get(response.relation.id)
+  } else if (response.relations) {
+    return api.relation.get(response.relations[0].id)
   }
 })

@@ -15,7 +15,7 @@
     const unsubscribe = data.realtime.subscribe("account", payload => {
       if (isPreferencesResponse(payload)) {
         const html = document.getElementsByTagName("html")[0]
-        const dark = payload.payload.dark === "true"
+        const dark = payload.payload.dark ? payload.payload.dark === "true" : true
         html.setAttribute("class", dark ? "dark" : '')
       }
       invalidateAll()

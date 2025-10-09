@@ -90,4 +90,6 @@ export const add = form(z.object({
       ticket: data.ticket
     }
   })
+
+  return { message: "Daily aangemaakt" }
 })
