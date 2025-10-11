@@ -23,6 +23,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 }
 
 export const handleError: HandleServerError = ({ error }) => {
+  console.error(error)
   if (error instanceof AppwriteException) {
     if (error.type === "user_unauthorized") {
       return { message: "Je hebt niet genoeg rechten om deze actie uit te voeren" }

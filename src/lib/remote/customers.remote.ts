@@ -5,12 +5,42 @@ import { error } from "@sveltejs/kit";
 import type { ContactPerson, Customer, System } from "$lib/appwrite/types";
 import { APPWRITE } from "$lib/appwrite/config";
 
-export const list = query(async () => {
+export const list = query(z.object({
+  page: z.int().optional(),
+  search: z.string().optional(),
+  autoIncasso: z.boolean().nullish(),
+  interval: z.enum(["Maand", "Kwartaal", "Jaar"]).nullish()
+}), async data => {
   const { locals } = getRequestEvent()
+
+  const queries: string[] = [
+    Query.limit(50),
+    Query.offset(data.page ? (data.page - 1) * 50 : 0)
+  ]
+
+  if (data.search && data.search.length > 0) {
+    const orQueries: string[] = [
+      Query.search("name", data.search)
+    ]
+    if (Number.isInteger(Number(data.search))) {
+      orQueries.push(Query.equal("wticket", Number(data.search)))
+      orQueries.push(Query.equal("snelstartId", Number(data.search)))
+      orQueries.push(Query.equal("ninjaOrganization", Number(data.search)))
+    }
+    queries.push(orQueries.length > 1 ? Query.or(orQueries) : orQueries[0])
+  }
+
+  if (data.autoIncasso !== undefined && data.autoIncasso !== null) {
+    queries.push(Query.equal("invoiceIncasso", data.autoIncasso))
+  }
+  if (data.interval !== undefined && data.interval !== null) {
+    queries.push(Query.equal("invoiceInterval", data.interval))
+  }
 
   return locals.db.listRows<Customer & Models.Row>({
     databaseId: APPWRITE.DB,
-    tableId: APPWRITE.CUSTOMERS
+    tableId: APPWRITE.CUSTOMERS,
+    queries
   })
 })
 
