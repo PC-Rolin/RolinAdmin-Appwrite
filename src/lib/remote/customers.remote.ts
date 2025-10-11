@@ -1,6 +1,6 @@
-import { getRequestEvent, query } from "$app/server";
+import { form, getRequestEvent, query } from "$app/server";
 import { z } from "zod";
-import { type Models, Query } from "appwrite";
+import { ID, type Models, Query } from "appwrite";
 import { error } from "@sveltejs/kit";
 import type { ContactPerson, Customer, System } from "$lib/appwrite/types";
 import { APPWRITE } from "$lib/appwrite/config";
@@ -15,7 +15,8 @@ export const list = query(z.object({
 
   const queries: string[] = [
     Query.limit(50),
-    Query.offset(data.page ? (data.page - 1) * 50 : 0)
+    Query.offset(data.page ? (data.page - 1) * 50 : 0),
+    Query.orderAsc("wticket")
   ]
 
   if (data.search && data.search.length > 0) {
@@ -70,4 +71,25 @@ export const getByWTicket = query(z.number(), async id => {
   })
 
   return result.rows.length > 0 ? result.rows[0] : error(404, "Customer not found")
+})
+
+export const add = form(z.object({
+  name: z.string(),
+  wticket: z.coerce.number<string>().min(10000),
+  type: z.enum(["Particulier", "Zakelijk"])
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.createRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.CUSTOMERS,
+    rowId: ID.unique(),
+    data: {
+      name: data.name,
+      wticket: data.wticket,
+      type: data.type
+    }
+  })
+
+  return { message: "Klant aangemaakt" }
 })

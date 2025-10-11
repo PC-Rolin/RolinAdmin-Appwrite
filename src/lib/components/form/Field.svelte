@@ -1,15 +1,18 @@
-<script lang="ts">
+<script lang="ts" generics="T extends RemoteFormFieldValue">
   // noinspection ES6UnusedImports
   import { Field } from "$lib/components/ui";
-  import type { RemoteFormField } from "@sveltejs/kit";
+  // noinspection ES6UnusedImports
+  import type { RemoteFormField, RemoteFormFieldValue } from "@sveltejs/kit";
   import { Input } from "$lib/components/ui";
-  import type { HTMLInputAttributes } from "svelte/elements";
+  import type { ComponentProps, Snippet } from "svelte";
 
-  let { field, label, as = "text", ...rest }: {
-    field: RemoteFormField<any>
+  let { field, label, children, ...rest }: {
+    field: RemoteFormField<T>
     label?: string
-    as?: "text" | "number" | "email" | "password" | "hidden"
-  } & Omit<HTMLInputAttributes, "files"> = $props()
+    children?: Snippet<[string]>
+  } & ComponentProps<typeof Input> = $props()
+
+  const inputField = field as RemoteFormField<any>
 
   const id = $props.id()
 </script>
@@ -18,7 +21,11 @@
   {#if label}
     <Field.Label for={id}>{label}</Field.Label>
   {/if}
-  <Input {...rest} {id} {...field.as(as)}/>
+  {#if children}
+    {@render children(id)}
+  {:else}
+    <Input {...inputField.as("text")} {...rest} {id}/>
+  {/if}
   {#each field.issues() ?? [] as issue}
     <Field.Error>{issue.message}</Field.Error>
   {/each}

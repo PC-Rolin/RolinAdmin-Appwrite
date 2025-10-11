@@ -1,10 +1,10 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Table, Pagination, Input, Button } from "$lib/components/ui"
+  import { Table, Pagination, Input, buttonVariants } from "$lib/components/ui"
   import * as remote from "$lib/remote/customers.remote"
   import { goto, preloadData } from "$app/navigation"
-  import { ChevronRight, ChevronLeft } from "@lucide/svelte"
-  import { Select } from "$lib/components/form";
+  import { ChevronRight, ChevronLeft, Plus } from "@lucide/svelte"
+  import { Field, Form, Modal, Select } from "$lib/components/form";
 
   let p = $state(1)
   let search = $state("")
@@ -34,7 +34,22 @@
       onValueChange={value => value === "" ? interval = null : interval = value}
       placeholder="Interval"
     />
-    <Button class="ml-auto">Test</Button>
+    <Modal title="Klant toevoegen" triggerClass={[buttonVariants(), "ml-auto"]}>
+      {#snippet trigger()}
+        <Plus/>
+        Toevoegen
+      {/snippet}
+      <Form form={remote.add}>
+        {#snippet children({ fields })}
+          <Field field={fields.name} label="Naam" placeholder="Naam"/>
+          <Field field={fields.wticket} type="number" label="WTicket Nummer" placeholder="WTicket Nummer"/>
+          <Field field={fields.type} label="Type">
+            {@const field = fields.type.as("select")}
+            <Select name={field.name} value={String(field.value)} options={[{ label: "Particulier", value: "Particulier" }, { label: "Zakelijk", value: "Zakelijk" }]}/>
+          </Field>
+        {/snippet}
+      </Form>
+    </Modal>
   </div>
 
   <Table.Root>
