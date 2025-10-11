@@ -5,14 +5,14 @@
   import type { RemoteFormField, RemoteFormFieldValue } from "@sveltejs/kit";
   import { Input } from "$lib/components/ui";
   import type { ComponentProps, Snippet } from "svelte";
+  import Issues from "$lib/components/form/Issues.svelte";
 
-  let { field, label, children, ...rest }: {
+  let { field, label, input, as, ...rest }: {
     field: RemoteFormField<T>
     label?: string
-    children?: Snippet<[string]>
+    input?: Snippet<[string]>
+    as?: Parameters<typeof field.as>[0]
   } & ComponentProps<typeof Input> = $props()
-
-  const inputField = field as RemoteFormField<any>
 
   const id = $props.id()
 </script>
@@ -21,12 +21,10 @@
   {#if label}
     <Field.Label for={id}>{label}</Field.Label>
   {/if}
-  {#if children}
-    {@render children(id)}
+  {#if input}
+    {@render input(id)}
   {:else}
-    <Input {...inputField.as("text")} {...rest} {id}/>
+    <Input {...field.as(as ?? "text")} {...rest} {id}/>
   {/if}
-  {#each field.issues() ?? [] as issue}
-    <Field.Error>{issue.message}</Field.Error>
-  {/each}
+  <Issues issues={field.issues()}/>
 </Field.Field>

@@ -1,7 +1,11 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Card, Badge, Tabs } from "$lib/components/ui"
+  import { Card, Badge, Tabs, DropdownMenu, Button, Checkbox, Field } from "$lib/components/ui"
+  import { SquarePen, Plus } from "@lucide/svelte";
   import { page } from "$app/state";
+  import { Field as FormField, Form, Modal } from "$lib/components/form";
+  import * as contactPersons from "$lib/remote/contactPersons.remote"
+  import Issues from "$lib/components/form/Issues.svelte";
 
   let { data, children, params } = $props()
 </script>
@@ -33,6 +37,43 @@
           {/if}
         </div>
       </div>
+
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger class="ml-auto">
+          <Button variant="secondary">
+            <SquarePen/>
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content side="left" align="start">
+          <DropdownMenu.Group>
+            <DropdownMenu.Label>Algemeen</DropdownMenu.Label>
+          </DropdownMenu.Group>
+          <DropdownMenu.Separator/>
+          <DropdownMenu.Group>
+            <DropdownMenu.Label>Contactpersonen</DropdownMenu.Label>
+            <DropdownMenu.Item class="p-0" closeOnSelect={false}>
+              <Modal title="Contactpersoon toevoegen" triggerClass="flex items-center gap-2 p-2">
+                {#snippet trigger()}
+                  <Plus/>
+                  Toevoegen
+                {/snippet}
+                <Form form={contactPersons.add}>
+                  {#snippet children({ fields })}
+                    <FormField field={fields.name} label="Naam" placeholder="Naam" required/>
+                    <FormField field={fields.email} type="email" label="Email" placeholder="Email"/>
+                    <FormField field={fields.phone} label="Telefoon" placeholder="Telefoon"/>
+                    <Field.Field>
+                      <Field.Label>Admin</Field.Label>
+                      <Checkbox name="admin" class="!size-4" checked={fields.admin.value()}/>
+                      <Issues issues={fields.admin.issues()}/>
+                    </Field.Field>
+                  {/snippet}
+                </Form>
+              </Modal>
+            </DropdownMenu.Item>
+          </DropdownMenu.Group>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
     </div>
   </Card.Content>
 </Card.Root>
