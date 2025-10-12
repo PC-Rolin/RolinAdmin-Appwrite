@@ -1,6 +1,6 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Card, Badge, Tabs, DropdownMenu, Button, Checkbox, Field } from "$lib/components/ui"
+  import { Card, Badge, Tabs, DropdownMenu, Button, Checkbox, Field, buttonVariants } from "$lib/components/ui"
   import { SquarePen, Plus } from "@lucide/svelte";
   import { page } from "$app/state";
   import { Field as FormField, Form, Modal } from "$lib/components/form";
@@ -12,7 +12,7 @@
 
 <Card.Root class="mb-4">
   <Card.Content>
-    <div class="flex gap-4">
+    <div class="flex items-center gap-4">
       <div>
         <h1 class="text-3xl font-medium mb-1">{data.customer.name}</h1>
         <div class="flex gap-2">
@@ -39,10 +39,8 @@
       </div>
 
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger class="ml-auto">
-          <Button variant="secondary">
-            <SquarePen/>
-          </Button>
+        <DropdownMenu.Trigger class={[buttonVariants({ variant: "secondary" }), "ml-auto"]}>
+          <SquarePen/>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content side="left" align="start">
           <DropdownMenu.Group>

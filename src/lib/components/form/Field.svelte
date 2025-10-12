@@ -24,7 +24,7 @@
   {#if input}
     {@render input(id)}
   {:else}
-    <Input {...field.as(as ?? "text")} {...rest} {id}/>
+    <Input {...rest} {...field.as(as ?? "text")} {id}/>
   {/if}
   <Issues issues={field.issues()}/>
 </Field.Field>

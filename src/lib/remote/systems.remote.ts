@@ -1,10 +1,12 @@
-import { query } from "$app/server";
+import { form, getRequestEvent, query } from "$app/server";
 import { z } from "zod";
 import { createNinjaClient } from "$lib/server/ninja";
 import * as customers from "$lib/remote/customers.remote"
 import type { DeviceDetails } from "ninja-api";
 import type { System } from "$lib/appwrite/types";
-import type { Models } from "appwrite";
+import { ID, type Models } from "appwrite";
+import { optional } from "$lib/remote/schemas";
+import { APPWRITE } from "$lib/appwrite/config";
 
 export const list = query(z.string(), async id => {
   const ninja = await createNinjaClient()
@@ -37,5 +39,35 @@ export const list = query(z.string(), async id => {
     }
   }
 
-  return { dbSystems, ninjaSystems, combinedSystems }
+  return {
+    db: dbSystems,
+    ninja: ninjaSystems,
+    combined: combinedSystems
+  }
+})
+
+export const upsert = form(z.object({
+  id: optional(z.string()),
+  customer: z.string(),
+  ninja: z.coerce.number<string>(),
+  contactPerson: z.string(),
+  package: z.coerce.number<string>(),
+  hasSyncback: z.coerce.boolean<boolean>()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.upsertRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.SYSTEMS,
+    rowId: data.id ?? ID.unique(),
+    data: {
+      customer: data.customer,
+      ninja: data.ninja,
+      package: data.package,
+      contactPerson: data.contactPerson,
+      hasSyncback: data.hasSyncback
+    }
+  })
+
+  return { message: "Systeem opgeslagen" }
 })

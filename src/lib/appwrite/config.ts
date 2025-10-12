@@ -8,5 +8,6 @@ export const APPWRITE = {
   DAILY: "daily",
   PRICELIST_PRICES: "pricelistPrices",
   PRICELIST_CATEGORIES: "pricelistCategories",
-  CONTACT_PERSONS: "contactPersons"
+  CONTACT_PERSONS: "contactPersons",
+  SYSTEMS: "systems",
 } as const satisfies AppwriteConfig
