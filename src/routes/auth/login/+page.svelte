@@ -1,7 +1,8 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Button, Card, Input, Label } from "$lib/components/ui"
+  import { Card } from "$lib/components/ui"
   import * as auth from "$lib/remote/auth.remote"
+  import { Field, Form } from "$lib/components/form";
 </script>
 
 <div class="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -14,26 +15,12 @@
           <Card.Description>Log in om verder te gaan</Card.Description>
         </Card.Header>
         <Card.Content>
-          <form {...auth.login}>
-            <div class="grid gap-6">
-              <div class="grid gap-3">
-                <Label for="email">Email</Label>
-                <Input
-                  {...auth.login.fields.email.as("email")}
-                  id="email"
-                  placeholder="support@pcrolin.nl"
-                  required
-                />
-                {auth.login.fields.email.issues()?.[0].message}
-              </div>
-              <div class="grid gap-3">
-                <Label for="password">Password</Label>
-                <Input {...auth.login.fields._password.as("password")} id="password" required/>
-                {auth.login.fields._password.issues()?.[0].message}
-              </div>
-              <Button type="submit" class="w-full">Login</Button>
-            </div>
-          </form>
+          <Form form={auth.login} submitButtonLabel="Login">
+            {#snippet children({ fields })}
+              <Field field={fields.email} as="email" label="Email" required/>
+              <Field field={fields._password} as="password" label="Wachtwoord" required/>
+            {/snippet}
+          </Form>
         </Card.Content>
       </Card.Root>
     </div>

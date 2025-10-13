@@ -5,13 +5,14 @@
   import type { Snippet } from "svelte";
   import forms from "$lib/utils/forms";
 
-  let { form, children, remove = false, onSuccess, reset = true, disableSubmit = false }: {
+  let { form, children, remove = false, onSuccess, reset = true, disableSubmit = false, ...rest }: {
     form: RemoteForm<T, R> | Omit<RemoteForm<T, R>, "for">
     children: Snippet<[{ fields: typeof form.fields }]>
     remove?: boolean
     onSuccess?(result: R): void
     reset?: boolean
     disableSubmit?: boolean
+    submitButtonLabel?: string
   } = $props()
 </script>
 
@@ -44,7 +45,7 @@
             <Spinner/>
             Laden...
           {:else}
-            Opslaan
+            {rest.submitButtonLabel ?? "Opslaan"}
           {/if}
         </Button>
       {/if}
