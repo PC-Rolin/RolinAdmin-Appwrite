@@ -1,8 +1,18 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
   import { Card } from "$lib/components/ui"
+  import { onMount } from "svelte";
+  import { page } from "$app/state";
 
   let { data } = $props()
+
+  onMount(async () => {
+    if (data.user) {
+      await data.aw.account.createEmailVerification({
+        url: `${page.url.origin}/auth/callback/verify`
+      })
+    }
+  })
 </script>
 
 <div class="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">

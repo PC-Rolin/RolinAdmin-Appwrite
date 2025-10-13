@@ -28,7 +28,7 @@
   <Dialog.Trigger class={triggerClass}>
     {@render trigger()}
   </Dialog.Trigger>
-  <Dialog.Content interactOutsideBehavior="ignore" class="max-h-[98%] overflow-auto">
+  <Dialog.Content interactOutsideBehavior="ignore" class="max-h-[98%] overflow-x-none">
     {#if title}
       <Dialog.Header>
         <Dialog.Title>{title}</Dialog.Title>

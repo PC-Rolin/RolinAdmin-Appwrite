@@ -1,6 +1,6 @@
 import type { LayoutLoad } from './$types'
 import { createClient } from "$lib/appwrite";
-import { Avatars, TablesDB } from "appwrite";
+import { Account, Avatars, TablesDB } from "appwrite";
 import type { Breadcrumb } from "$lib/types";
 import { Realtime } from "$lib/appwrite/realtime";
 
@@ -12,7 +12,8 @@ export const load: LayoutLoad = async ({ data }) => {
     aw: {
       client,
       avatars: new Avatars(client),
-      db: new TablesDB(client)
+      db: new TablesDB(client),
+      account: new Account(client)
     },
     breadcrumbs: [] as Breadcrumb[],
     realtime: new Realtime(client)

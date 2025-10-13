@@ -14,7 +14,7 @@
 
   let { table, value = $bindable(undefined), name, queries, map = defaultMap, required = false }: {
     table: keyof Omit<typeof APPWRITE, "DB">
-    value?: string
+    value?: string | number
     name?: string
     queries?: string[]
     map?: (document: Models.DefaultRow) => { value: string, label: string }

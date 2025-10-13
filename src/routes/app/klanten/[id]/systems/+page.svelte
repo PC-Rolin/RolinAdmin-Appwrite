@@ -1,12 +1,14 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Accordion, Badge, Button, Table, buttonVariants } from "$lib/components/ui"
+  import { Accordion, Badge, Button, Table, buttonVariants, Checkbox, Input } from "$lib/components/ui"
   import type { System } from "$lib/appwrite/types"
   import { ShieldCheck, Headset, DatabaseBackup, Check, X, Settings2 } from "@lucide/svelte";
   import * as systems from "$lib/remote/systems.remote"
   import { Field, Form, Modal } from "$lib/components/form";
+  import { Combobox, DBCombobox } from "$lib/components/data";
+  import { Query } from "appwrite";
 
-  let { data } = $props()
+  let { data, params } = $props()
 
   const options: { value: string, label: string }[] = [
     {
@@ -103,17 +105,35 @@
                   <Button variant="outline" href="https://eu.ninjarmm.com/#/deviceDashboard/{system.id}/overview" target="_blank">
                     <img src="https://eu.ninjarmm.com/img/favicon.png" alt="Ninja" class="size-4"/>
                   </Button>
-                  <Modal title="Systeem Aanpassen" triggerClass={buttonVariants({ variant: "outline" })} onOpenChange={open => {
-                    if (open) {
-                      systems.upsert.fields.ninja.set(String(system.id))
-                    }
-                  }}>
+                  <Modal title="Systeem Aanpassen" triggerClass={buttonVariants({ variant: "outline" })}>
                     {#snippet trigger()}
                       <Settings2/>
                     {/snippet}
                     <Form form={systems.upsert}>
                       {#snippet children({ fields })}
-                        <Field field={fields.ninja} as="hidden" value={system.id}/>
+                        <input {...fields.ninja.as("hidden", String(system.id))}>
+                        <input {...fields.customer.as("hidden", params.id)}>
+
+                        <Field field={fields.contactPerson} label="Contactpersoon">
+                          {#snippet input()}
+                            <DBCombobox
+                              table="CONTACT_PERSONS"
+                              {...fields.contactPerson.as("select")}
+                              required
+                              queries={[Query.equal("customer", params.id)]}
+                            />
+                          {/snippet}
+                        </Field>
+                        <Field field={fields.package} label="Pakket">
+                          {#snippet input()}
+                            <Combobox {...fields.package.as("select")} {options} required/>
+                          {/snippet}
+                        </Field>
+                        <Field field={fields.hasSyncback}>
+                          {#snippet input()}
+                            <Input {...fields.hasSyncback.as("checkbox")}/>
+                          {/snippet}
+                        </Field>
                       {/snippet}
                     </Form>
                   </Modal>

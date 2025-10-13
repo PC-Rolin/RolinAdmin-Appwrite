@@ -7,7 +7,7 @@
   let { options, open = $bindable(false), value = $bindable(undefined), shouldFilter = true, items, name, required = false }: {
     options: { value: string, label: string }[]
     open?: boolean
-    value?: string
+    value?: string | number
     shouldFilter?: boolean
     items?: Snippet<[{ value: string, label: string }[]]>
     name?: string

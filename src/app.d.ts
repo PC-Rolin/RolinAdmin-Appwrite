@@ -19,6 +19,7 @@ declare global {
 				client: Client
 				avatars: Avatars
 				db: TablesDB
+				account: Account
 			}
 			breadcrumbs: Breadcrumb[]
 			realtime: Realtime
