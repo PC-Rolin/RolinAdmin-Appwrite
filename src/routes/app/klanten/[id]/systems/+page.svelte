@@ -1,6 +1,6 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Accordion, Badge, Button, Table, buttonVariants, Checkbox } from "$lib/components/ui"
+  import { Accordion, Badge, Button, Table, buttonVariants, Checkbox, Tooltip } from "$lib/components/ui"
   import type { System } from "$lib/appwrite/types"
   import { ShieldCheck, Headset, DatabaseBackup, Check, X, Settings2, Trash2 } from "@lucide/svelte";
   import * as systems from "$lib/remote/systems.remote"
@@ -39,19 +39,50 @@
 </script>
 
 {#snippet PackageIcon(systemPackage: System["package"])}
-  {#if systemPackage === 1}
-    <ShieldCheck/>
-  {:else if systemPackage === 2}
-    <ShieldCheck/> <Headset />
-  {:else if systemPackage === 3}
-    <ShieldCheck/> <DatabaseBackup />
-  {:else if systemPackage === 4}
-    <ShieldCheck/> <Headset /> <DatabaseBackup />
-  {:else if systemPackage === 5}
-    <DatabaseBackup />
-  {:else}
-    -
-  {/if}
+  {#snippet VeiligOnline()}
+    <Tooltip.Root>
+      <Tooltip.Trigger class="cursor-default">
+        <ShieldCheck/>
+      </Tooltip.Trigger>
+      <Tooltip.Content>Veilig Online</Tooltip.Content>
+    </Tooltip.Root>
+  {/snippet}
+  {#snippet Support()}
+    <Tooltip.Root>
+      <Tooltip.Trigger class="cursor-default">
+        <Headset/>
+      </Tooltip.Trigger>
+      <Tooltip.Content>Support</Tooltip.Content>
+    </Tooltip.Root>
+  {/snippet}
+  {#snippet Backup()}
+    <Tooltip.Root>
+      <Tooltip.Trigger class="cursor-default">
+        <DatabaseBackup/>
+      </Tooltip.Trigger>
+      <Tooltip.Content>Backup</Tooltip.Content>
+    </Tooltip.Root>
+  {/snippet}
+
+  <div class="flex gap-2">
+    {#if systemPackage === 1}
+      {@render VeiligOnline()}
+    {:else if systemPackage === 2}
+      {@render VeiligOnline()}
+      {@render Support()}
+    {:else if systemPackage === 3}
+      {@render VeiligOnline()}
+      {@render Backup()}
+    {:else if systemPackage === 4}
+      {@render VeiligOnline()}
+      {@render Support()}
+      {@render Backup()}
+    {:else if systemPackage === 5}
+      {@render Backup()}
+    {:else}
+      -
+    {/if}
+  </div>
 {/snippet}
 
 <Accordion.Root type="multiple" value={["systemen"]} class="flex flex-col gap-4">

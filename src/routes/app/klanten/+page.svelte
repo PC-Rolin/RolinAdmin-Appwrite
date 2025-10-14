@@ -59,7 +59,6 @@
         <Table.Head>WTicket</Table.Head>
         <Table.Head>Snelstart</Table.Head>
         <Table.Head>Ninja</Table.Head>
-        <Table.Head>Pakket</Table.Head>
         <Table.Head>Naam</Table.Head>
         <Table.Head>Plaats</Table.Head>
         <Table.Head>Type</Table.Head>
@@ -82,7 +81,6 @@
           <Table.Cell>{customer.wticket}</Table.Cell>
           <Table.Cell>{customer.snelstartId}</Table.Cell>
           <Table.Cell>{customer.ninjaOrganization}</Table.Cell>
-          <Table.Cell></Table.Cell>
           <Table.Cell>{customer.name}</Table.Cell>
           <Table.Cell>{customer.city}</Table.Cell>
           <Table.Cell>{customer.type}</Table.Cell>
