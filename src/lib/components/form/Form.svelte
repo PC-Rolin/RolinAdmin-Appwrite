@@ -38,7 +38,7 @@
         <Button variant="outline" onclick={forms.close}>
           Annuleren
         </Button>
-        <Button variant="destructive" type="submit" disabled={!!form.pending}>
+        <Button variant="destructive" type="submit" class="ml-auto" disabled={!!form.pending}>
           {#if form.pending}
             <Spinner/>
             Laden...

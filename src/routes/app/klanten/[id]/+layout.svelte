@@ -6,16 +6,8 @@
   import { Field as FormField, Form, Modal } from "$lib/components/form";
   import * as contactPersons from "$lib/remote/contactPersons.remote"
   import Issues from "$lib/components/form/Issues.svelte";
-  import { onMount } from "svelte";
-  import { invalidateAll } from "$app/navigation";
 
   let { data, children, params } = $props()
-
-  onMount(() => {
-    return data.realtime.subscribe(`databases.rolinadmin.tables.contactPersons.rows.${params.id}`, () => {
-      invalidateAll()
-    })
-  })
 </script>
 
 <Card.Root class="mb-4">

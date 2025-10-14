@@ -1,7 +1,7 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Badge, Card, Input, Textarea, DropdownMenu, buttonVariants, Checkbox } from "$lib/components/ui"
-  import { Mail, CalendarSync, RefreshCcwDot, X, Check, ReceiptEuro, MapPinHouse, StickyNote, ShieldUser, User, Phone, SearchX, SquarePen } from "@lucide/svelte"
+  import { Badge, Card, Input, Textarea, DropdownMenu, buttonVariants, Checkbox, Button } from "$lib/components/ui"
+  import { Mail, CalendarSync, RefreshCcwDot, X, Check, ReceiptEuro, MapPinHouse, StickyNote, ShieldUser, User, Phone, SearchX, SquarePen, Trash2 } from "@lucide/svelte"
   import { Field, Form, Modal } from "$lib/components/form";
   import * as remote from "$lib/remote/contactPersons.remote"
 
@@ -206,6 +206,19 @@
                             <Checkbox {id} class="!size-4" checked={fields.admin.value()} name={fields.admin.as("checkbox").name}/>
                           {/snippet}
                         </Field>
+                      {/snippet}
+                    </Form>
+                  </Modal>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item class="p-0" closeOnSelect={false}>
+                  <Modal triggerClass="flex items-center gap-2 p-2 text-destructive" title="Contactpersoon verwijderen">
+                    {#snippet trigger()}
+                      <Trash2 class="text-destructive"/>
+                      Verwijderen
+                    {/snippet}
+                    <Form form={remote.remove} remove>
+                      {#snippet children({ fields })}
+                        <input {...fields.id.as("hidden", contactPerson.$id)}/>
                       {/snippet}
                     </Form>
                   </Modal>

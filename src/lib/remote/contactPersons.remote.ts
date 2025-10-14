@@ -51,3 +51,17 @@ export const edit = form(z.object({
 
   return { message: "Contactpersoon aangepast" }
 })
+
+export const remove = form(z.object({
+  id: z.string()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.deleteRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.CONTACT_PERSONS,
+    rowId: data.id
+  })
+
+  return { message: "Contactpersoon verwijderd" }
+})
