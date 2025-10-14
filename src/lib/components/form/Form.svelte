@@ -1,4 +1,4 @@
-<script lang="ts" generics="T extends Record<string, any>, R extends Record<string, any> | void">
+<script lang="ts" generics="T extends Record<string, any> | void, R extends Record<string, any> | void | never">
   // noinspection ES6UnusedImports
   import { Button, Field, Spinner } from "$lib/components/ui";
   import type { RemoteForm } from "@sveltejs/kit";
@@ -7,7 +7,7 @@
 
   let { form, children, remove = false, onSuccess, reset = true, disableSubmit = false, ...rest }: {
     form: RemoteForm<T, R> | Omit<RemoteForm<T, R>, "for">
-    children: Snippet<[{ fields: typeof form.fields }]>
+    children?: Snippet<[{ fields: typeof form.fields }]>
     remove?: boolean
     onSuccess?(result: R): void
     reset?: boolean
@@ -30,9 +30,11 @@
   }
 })}>
   <Field.Set>
-    <Field.Group>
-      {@render children({ fields: form.fields })}
-    </Field.Group>
+    {#if children}
+      <Field.Group>
+        {@render children({ fields: form.fields })}
+      </Field.Group>
+    {/if}
     <Field.Field orientation={remove ? "horizontal" : "vertical"}>
       {#if remove}
         <Button variant="outline" onclick={forms.close}>

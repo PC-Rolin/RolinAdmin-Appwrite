@@ -11,7 +11,7 @@
     field: RemoteFormField<T>
     label?: string
     input?: Snippet<[string]>
-    as?: Parameters<typeof field.as>[0]
+    as?: Parameters<RemoteFormField<any>["as"]>[0]
   } & ComponentProps<typeof Input> = $props()
 
   const id = $props.id()
