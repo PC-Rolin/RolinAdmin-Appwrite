@@ -1,8 +1,8 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Accordion, Badge, Button, Table, buttonVariants, Checkbox, Input } from "$lib/components/ui"
+  import { Accordion, Badge, Button, Table, buttonVariants, Checkbox } from "$lib/components/ui"
   import type { System } from "$lib/appwrite/types"
-  import { ShieldCheck, Headset, DatabaseBackup, Check, X, Settings2 } from "@lucide/svelte";
+  import { ShieldCheck, Headset, DatabaseBackup, Check, X, Settings2, Trash2 } from "@lucide/svelte";
   import * as systems from "$lib/remote/systems.remote"
   import { Field, Form, Modal } from "$lib/components/form";
   import { Combobox, DBCombobox } from "$lib/components/data";
@@ -65,7 +65,7 @@
               <Table.Head>Pakket</Table.Head>
               <Table.Head>Naam</Table.Head>
               <Table.Head>Contact</Table.Head>
-              <Table.Head>Edit</Table.Head>
+              <Table.Head>Acties</Table.Head>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -75,6 +75,20 @@
                 <Table.Cell>{@render PackageIcon(system.package)}</Table.Cell>
                 <Table.Cell>-</Table.Cell>
                 <Table.Cell>{contactPerson?.name ?? '-'}</Table.Cell>
+                <Table.Cell>
+                  <div class="flex gap-2">
+                    <Modal title="Systeem verwijderen uit onze database" triggerClass={buttonVariants({ variant: "destructive" })}>
+                      {#snippet trigger()}
+                        <Trash2/>
+                      {/snippet}
+                      <Form form={systems.remove} remove>
+                        {#snippet children({ fields })}
+                          <input {...fields.id.as("hidden", system.$id)}/>
+                        {/snippet}
+                      </Form>
+                    </Modal>
+                  </div>
+                </Table.Cell>
               </Table.Row>
             {/each}
           </Table.Body>
@@ -129,9 +143,9 @@
                             <Combobox {...fields.package.as("select")} {options} required/>
                           {/snippet}
                         </Field>
-                        <Field field={fields.hasSyncback}>
-                          {#snippet input()}
-                            <Input {...fields.hasSyncback.as("checkbox")}/>
+                        <Field field={fields.hasSyncback} label="SyncBack Back-up">
+                          {#snippet input(id)}
+                            <Checkbox {id} class="!size-4" checked={fields.hasSyncback.value()} name={fields.hasSyncback.as("checkbox").name}/>
                           {/snippet}
                         </Field>
                       {/snippet}
@@ -182,20 +196,60 @@
                 {/if}
               </Table.Cell>
               <Table.Cell>{contactPerson?.name ?? '-'}</Table.Cell>
-              <Table.Cell class="flex gap-2">
-                <Button variant="outline" href="https://eu.ninjarmm.com/#/deviceDashboard/{system.id}/overview" target="_blank">
-                  <img src="https://eu.ninjarmm.com/img/favicon.png" alt="Ninja" class="size-4"/>
-                </Button>
-                <Modal title="Systeem Aanpassen">
-                  {#snippet trigger()}
-                    <Settings2/>
-                  {/snippet}
-                  <Form form={systems.upsert}>
-                    {#snippet children({ fields })}
-                      <Field field={fields.ninja} as="hidden"/>
+              <Table.Cell>
+                <div class="flex gap-2">
+                  <Button variant="outline" href="https://eu.ninjarmm.com/#/deviceDashboard/{system.id}/overview" target="_blank">
+                    <img src="https://eu.ninjarmm.com/img/favicon.png" alt="Ninja" class="size-4"/>
+                  </Button>
+                  <Modal title="Systeem Aanpassen" triggerClass={buttonVariants({ variant: "outline" })}>
+                    {#snippet trigger()}
+                      <Settings2/>
                     {/snippet}
-                  </Form>
-                </Modal>
+                    <Form form={systems.upsert} data={{
+                    ...system,
+                    id: system.$id,
+                    ninja: String(system.id),
+                    package: String(system.package)
+                  }}>
+                    {#snippet children({ fields })}
+                      <input {...fields.id.as("hidden", system.$id)}/>
+                      <input {...fields.ninja.as("hidden", String(system.id))}>
+                      <input {...fields.customer.as("hidden", params.id)}>
+
+                      <Field field={fields.contactPerson} label="Contactpersoon">
+                        {#snippet input()}
+                          <DBCombobox
+                            table="CONTACT_PERSONS"
+                            {...fields.contactPerson.as("select")}
+                            required
+                            queries={[Query.equal("customer", params.id)]}
+                          />
+                        {/snippet}
+                      </Field>
+                      <Field field={fields.package} label="Pakket">
+                        {#snippet input()}
+                          <Combobox {...fields.package.as("select")} {options} required/>
+                        {/snippet}
+                      </Field>
+                      <Field field={fields.hasSyncback} label="SyncBack Back-up">
+                        {#snippet input(id)}
+                          <Checkbox {id} class="!size-4" checked={fields.hasSyncback.value()} name={fields.hasSyncback.as("checkbox").name}/>
+                        {/snippet}
+                      </Field>
+                    {/snippet}
+                    </Form>
+                  </Modal>
+                  <Modal title="Systeem verwijderen uit onze database" triggerClass={buttonVariants({ variant: "destructive" })}>
+                    {#snippet trigger()}
+                      <Trash2/>
+                    {/snippet}
+                    <Form form={systems.remove} remove>
+                      {#snippet children({ fields })}
+                        <input {...fields.id.as("hidden", system.$id)}/>
+                      {/snippet}
+                    </Form>
+                  </Modal>
+                </div>
               </Table.Cell>
             </Table.Row>
           {:else}

@@ -71,3 +71,17 @@ export const upsert = form(z.object({
 
   return { message: "Systeem opgeslagen" }
 })
+
+export const remove = form(z.object({
+  id: z.string()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.deleteRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.SYSTEMS,
+    rowId: data.id
+  })
+
+  return { message: "Systeem verwijderd" }
+})
