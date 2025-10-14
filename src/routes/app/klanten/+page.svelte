@@ -44,8 +44,9 @@
           <Field field={fields.name} label="Naam" placeholder="Naam"/>
           <Field field={fields.wticket} type="number" label="WTicket Nummer" placeholder="WTicket Nummer"/>
           <Field field={fields.type} label="Type">
-            {@const field = fields.type.as("select")}
-            <Select name={field.name} value={String(field.value)} options={[{ label: "Particulier", value: "Particulier" }, { label: "Zakelijk", value: "Zakelijk" }]}/>
+            {#snippet input()}
+              <Select {...fields.type.as("select")} options={[{ label: "Particulier", value: "Particulier" }, { label: "Zakelijk", value: "Zakelijk" }]}/>
+            {/snippet}
           </Field>
         {/snippet}
       </Form>

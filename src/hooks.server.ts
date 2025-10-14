@@ -1,6 +1,11 @@
-import type { Handle, HandleServerError } from "@sveltejs/kit";
+import type { Handle, HandleServerError, ServerInit } from "@sveltejs/kit";
 import { COOKIE, createClient } from "$lib/appwrite";
 import { Account, AppwriteException, TablesDB } from "appwrite";
+import { z } from "zod";
+
+export const init: ServerInit = async () => {
+  z.config(z.locales.nl())
+}
 
 export const handle: Handle = async ({ resolve, event }) => {
   const client = createClient(event.cookies.get(COOKIE))
