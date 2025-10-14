@@ -13,7 +13,14 @@
     reset?: boolean
     disableSubmit?: boolean
     submitButtonLabel?: string
+    data?: {
+      [P in keyof T]?: T[P] | null
+    }
   } = $props()
+
+  if (rest.data) {
+    form.fields.set(rest.data)
+  }
 </script>
 
 <form {...forms.apply(form, {

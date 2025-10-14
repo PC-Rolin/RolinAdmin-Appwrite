@@ -1,7 +1,9 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Badge, Card, Input, Textarea } from "$lib/components/ui"
-  import { Mail, CalendarSync, RefreshCcwDot, X, Check, ReceiptEuro, MapPinHouse, StickyNote, ShieldUser, User, Phone, SearchX } from "@lucide/svelte"
+  import { Badge, Card, Input, Textarea, DropdownMenu, buttonVariants, Checkbox } from "$lib/components/ui"
+  import { Mail, CalendarSync, RefreshCcwDot, X, Check, ReceiptEuro, MapPinHouse, StickyNote, ShieldUser, User, Phone, SearchX, SquarePen } from "@lucide/svelte"
+  import { Field, Form, Modal } from "$lib/components/form";
+  import * as remote from "$lib/remote/contactPersons.remote"
 
   let { data } = $props()
 
@@ -177,6 +179,39 @@
                 {contactPerson.phone}
               </p>
             {/if}
+          </div>
+          <div class="ml-auto">
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger class={buttonVariants({ variant: "outline" })}>
+                <SquarePen/>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content side="left" align="start" class="bg-background">
+                <DropdownMenu.Label>Contactpersoon</DropdownMenu.Label>
+                <DropdownMenu.Item class="p-0" closeOnSelect={false}>
+                  {@const form = remote.edit.for(contactPerson.$id)}
+                  <Modal triggerClass="flex items-center gap-2 p-2" title="Contactpersoon aanpassen">
+                    {#snippet trigger()}
+                      <SquarePen/>
+                      Aanpassen
+                    {/snippet}
+                    <Form {form} data={{ ...contactPerson, admin: contactPerson.isAdmin }}>
+                      {#snippet children({ fields })}
+                        <input {...fields.id.as("hidden", contactPerson.$id)}>
+
+                        <Field field={fields.name} label="Naam"/>
+                        <Field field={fields.email} as="email" label="Email"/>
+                        <Field field={fields.phone} label="Telefoon"/>
+                        <Field field={fields.admin} label="Admin">
+                          {#snippet input(id)}
+                            <Checkbox {id} class="!size-4" checked={fields.admin.value()} name={fields.admin.as("checkbox").name}/>
+                          {/snippet}
+                        </Field>
+                      {/snippet}
+                    </Form>
+                  </Modal>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
           </div>
         </div>
       {:else}

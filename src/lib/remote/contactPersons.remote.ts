@@ -6,7 +6,7 @@ import { ID } from "appwrite";
 
 export const add = form(z.object({
   name: z.string(),
-  email: optional(z.email().optional()),
+  email: optional(z.email()),
   phone: optional(z.string()),
   admin: z.coerce.boolean<boolean>()
 }), async data => {
@@ -26,4 +26,28 @@ export const add = form(z.object({
   })
 
   return { message: "Contactpersoon aangemaakt" }
+})
+
+export const edit = form(z.object({
+  id: z.string(),
+  name: z.string(),
+  email: optional(z.email()),
+  phone: optional(z.string()),
+  admin: z.coerce.boolean<boolean>()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.updateRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.CONTACT_PERSONS,
+    rowId: data.id,
+    data: {
+      name: data.name,
+      isAdmin: data.admin,
+      email: data.email ?? null,
+      phone: data.phone ?? null
+    }
+  })
+
+  return { message: "Contactpersoon aangepast" }
 })
