@@ -1,11 +1,10 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Card, Badge, Tabs, DropdownMenu, Checkbox, Field, buttonVariants } from "$lib/components/ui"
+  import { Card, Badge, Tabs, DropdownMenu, Checkbox, buttonVariants } from "$lib/components/ui"
   import { SquarePen, Plus } from "@lucide/svelte";
   import { page } from "$app/state";
-  import { Field as FormField, Form, Modal } from "$lib/components/form";
+  import { Field, Form, Modal } from "$lib/components/form";
   import * as contactPersons from "$lib/remote/contactPersons.remote"
-  import Issues from "$lib/components/form/Issues.svelte";
 
   let { data, children, params } = $props()
 </script>
@@ -57,14 +56,14 @@
                 {/snippet}
                 <Form form={contactPersons.add}>
                   {#snippet children({ fields })}
-                    <FormField field={fields.name} label="Naam" placeholder="Naam" required/>
-                    <FormField field={fields.email} type="email" label="Email" placeholder="Email"/>
-                    <FormField field={fields.phone} label="Telefoon" placeholder="Telefoon"/>
-                    <Field.Field>
-                      <Field.Label>Admin</Field.Label>
-                      <Checkbox name="admin" class="!size-4" checked={fields.admin.value()}/>
-                      <Issues issues={fields.admin.issues()}/>
-                    </Field.Field>
+                    <Field field={fields.name} label="Naam"/>
+                    <Field field={fields.email} as="email" label="Email"/>
+                    <Field field={fields.phone} label="Telefoon"/>
+                    <Field field={fields.admin} label="Admin">
+                      {#snippet input(id)}
+                        <Checkbox {id} class="!size-4" checked={fields.admin.value()} name={fields.admin.as("checkbox").name}/>
+                      {/snippet}
+                    </Field>
                   {/snippet}
                 </Form>
               </Modal>
