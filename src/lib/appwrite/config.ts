@@ -10,4 +10,5 @@ export const APPWRITE = {
   PRICELIST_CATEGORIES: "pricelistCategories",
   CONTACT_PERSONS: "contactPersons",
   SYSTEMS: "systems",
+  OVERSTAPS: "overstaps"
 } as const satisfies AppwriteConfig

@@ -6,6 +6,15 @@ export type Daily = {
   status: string | null
 }
 
+export type Overstap = {
+  ticket: number
+  agent: string | null
+  completedBy: string | null
+  prio: number | null
+  status: "Voorbereiding" | "Start Kloon" | "Afwerking" | "Nazorg" | null
+  comment: string | null
+}
+
 export type Customer = {
   wticket: number
   name: string
