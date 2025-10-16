@@ -1,9 +1,10 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Popover, buttonVariants, Table } from "$lib/components/ui"
+  import { Popover, buttonVariants, Table, Textarea } from "$lib/components/ui"
   import { Plus, SquarePen, Trash2 } from "@lucide/svelte"
   import { Field, Form, Modal } from "$lib/components/form"
   import * as pricelist from "$lib/remote/pricelist.remote"
+  import { DBCombobox } from "$lib/components/data";
 
   let { data } = $props()
 </script>
@@ -22,6 +23,22 @@
         <Form form={pricelist.createCategory}>
           {#snippet children({ fields })}
             <Field field={fields.name} label="Naam" placeholder="Naam" required/>
+          {/snippet}
+        </Form>
+      </Modal>
+      <Modal title="Prijs toevoegen" triggerClass={[buttonVariants({ variant: "outline" }), "rounded-none rounded-b"]}>
+        {#snippet trigger()}
+          Nieuwe Prijs
+        {/snippet}
+        <Form form={pricelist.createPrice}>
+          {#snippet children({ fields })}
+            <Field field={fields.category} label="Categorie">
+              {#snippet input()}
+                <DBCombobox table="PRICELIST_CATEGORIES" name={fields.category.as("select").name}/>
+              {/snippet}
+            </Field>
+            <Field field={fields.name} label="Naam" placeholder="Naam" required/>
+            <Field field={fields.price} as="number" label="Prijs" placeholder="Prijs" required/>
           {/snippet}
         </Form>
       </Modal>
@@ -69,6 +86,43 @@
           </Table.Cell>
         {/if}
       </Table.Row>
+      {#each category.prices as price (price.$id)}
+        <Table.Row>
+          <Table.Cell>{price.name}</Table.Cell>
+          <Table.Cell>{Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(price.price)}</Table.Cell>
+          <Table.Cell>{price.priceZakelijk ? Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(price.priceZakelijk) : '-'}</Table.Cell>
+          <Table.Cell>{price.comment}</Table.Cell>
+          {#if data.user?.labels.includes("admin")}
+            <Table.Cell>
+              <div class="flex gap-4">
+                <Modal title="Prijs aanpassen" triggerClass={buttonVariants({ variant: "outline" })}>
+                  {#snippet trigger()}
+                    <SquarePen/>
+                  {/snippet}
+                  <Form form={pricelist.updatePrice} data={{ ...price, priceZakelijk: String(price.priceZakelijk) }}>
+                    {#snippet children({ fields })}
+                      <input {...fields.id.as("hidden", price.$id)}/>
+                      <Field field={fields.category} label="Categorie">
+                        {#snippet input()}
+                          <DBCombobox table="PRICELIST_CATEGORIES" name={fields.category.as("select").name} value={category.$id}/>
+                        {/snippet}
+                      </Field>
+                      <Field field={fields.name} label="Naam" placeholder="Naam" required/>
+                      <Field field={fields.price} as="number" label="Prijs" placeholder="Prijs" required/>
+                      <Field field={fields.priceZakelijk} as="number" label="Prijs Zakelijk" placeholder="Prijs Zakelijk"/>
+                      <Field field={fields.comment} label="Opmerkingen">
+                        {#snippet input()}
+                          <Textarea {...fields.comment.as("text")} placeholder="Opmerkingen"/>
+                        {/snippet}
+                      </Field>
+                    {/snippet}
+                  </Form>
+                </Modal>
+              </div>
+            </Table.Cell>
+          {/if}
+        </Table.Row>
+      {/each}
     {/each}
   </Table.Body>
 </Table.Root>
