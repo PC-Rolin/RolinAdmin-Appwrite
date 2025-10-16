@@ -1,9 +1,9 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
   import { Table, Avatar, buttonVariants } from "$lib/components/ui";
-  import { CircleCheck, CircleX, Plus, Trash2, CircleFadingArrowUp } from "@lucide/svelte";
+  import { CircleCheck, CircleX, Plus, Trash2, CircleFadingArrowUp, RotateCcwKey } from "@lucide/svelte";
   import { Form, Field, Modal } from "$lib/components/form";
-  import { list, add, remove, promote, demote } from "$lib/remote/admin/users.remote"
+  import { list, add, remove, promote, demote, resetPassword } from "$lib/remote/admin/users.remote"
 
   let { data } = $props()
 </script>
@@ -54,11 +54,24 @@
           {/if}
         </Table.Cell>
         <Table.Cell>
-          {@const removeUser = remove.for(user.$id)}
           <div class="flex gap-2">
             {#if user.$id === data.user?.$id}
               <i>Dit ben jij</i>
             {:else}
+              <Modal title="Naam veranderen">
+                {#snippet trigger()}
+                {/snippet}
+              </Modal>
+              <Modal title="Wachtwoord resetten" triggerClass={buttonVariants({ variant: "outline" })}>
+                {#snippet trigger()}
+                  <RotateCcwKey/>
+                {/snippet}
+                {@const form = resetPassword.for(user.$id)}
+                <Form {form} submitButtonLabel="Resetten">
+                  <span>Bij het resetten van het wachtwoord wordt deze teruggezet naar het standaard PC Rolin' wachtwoord</span>
+                  <input {...form.fields.id.as("hidden", user.$id)}/>
+                </Form>
+              </Modal>
               <Modal title={user.labels.includes("admin") ? `Admin rechten van ${user.name} verwijderen?` : `${user.name} admin rechten geven?`} triggerClass={buttonVariants({ variant: "outline" })}>
                 {#snippet trigger()}
                   <CircleFadingArrowUp class={user.labels.includes("admin") ? "text-destructive rotate-180" : "text-green-800"}/>
@@ -72,8 +85,9 @@
                 {#snippet trigger()}
                   <Trash2/>
                 {/snippet}
-                <Form form={removeUser} remove>
-                  <input {...removeUser.fields.id.as("hidden", user.$id)}/>
+                {@const form = remove.for(user.$id)}
+                <Form {form} remove>
+                  <input {...form.fields.id.as("hidden", user.$id)}/>
                 </Form>
               </Modal>
             {/if}

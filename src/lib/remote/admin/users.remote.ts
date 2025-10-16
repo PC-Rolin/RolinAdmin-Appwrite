@@ -15,10 +15,16 @@ export const add = form(z.object({
 }), async data => {
   const { users } = createAdminClient()
 
-  await users.create<Preferences>({
+  const user = await users.create<Preferences>({
     userId: ID.unique(),
     email: data.email,
-    name: data.name
+    name: data.name,
+    password: "rolininlog"
+  })
+
+  await users.updateEmailVerification({
+    userId: user.$id,
+    emailVerification: true
   })
 
   await list().refresh()
@@ -60,4 +66,31 @@ export const demote = form(z.object({
   })
 
   return { message: "Gebruiker gedegradeerd" }
+})
+
+export const resetPassword = form(z.object({
+  id: z.string()
+}), async data => {
+  const { users } = createAdminClient()
+
+  await users.updatePassword({
+    userId: data.id,
+    password: "rolininlog"
+  })
+
+  return { message: "Wachtwoord gereset" }
+})
+
+export const updateName = form(z.object({
+  id: z.string(),
+  name: z.string()
+}), async data => {
+  const { users } = createAdminClient()
+
+  await users.updateName({
+    userId: data.id,
+    name: data.name
+  })
+
+  return { message: "Naam bijgewerkt" }
 })
