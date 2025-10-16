@@ -1,8 +1,19 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
-  import { Card } from "$lib/components/ui";
+  import { Card, Avatar, Input } from "$lib/components/ui";
   import type { Component } from "svelte";
-  import { Package } from "@lucide/svelte";
+  import { Package, Phone, BellRing } from "@lucide/svelte";
+  import { list, updateAgent, updateName } from "$lib/remote/duties.remote";
+  import * as users from "$lib/remote/users.remote"
+  import { Select } from "$lib/components/form";
+  import { AppwriteException } from "appwrite";
+  import { toast } from "svelte-sonner";
+  import { isHttpError } from "@sveltejs/kit";
+
+  let { data } = $props()
+
+  let duties = $state(await list())
+  const profiles = await users.list()
 
   const links: { href: string, title: string, img?: string | Component }[] = [
     {
@@ -38,6 +49,41 @@
       title: "RolinClean"
     }
   ]
+
+  async function onNameChange(event: Event) {
+    event.preventDefault()
+    const target = event.target as HTMLInputElement
+    const id = target.getAttribute("data-id")!
+    try {
+      await updateName({ id, name: target.value })
+      toast.success("Naam aangepast")
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        toast.error(error.message)
+      } else if (isHttpError(error)) {
+        toast.error(error.body.message)
+      } else {
+        toast.error("Er is een onbekende fout opgetreden")
+      }
+      duties = await list()
+    }
+  }
+
+  async function onAgentChange(duty: string, agent: string) {
+    try {
+      await updateAgent({ id: duty, agent })
+      toast.success("Agent aangepast")
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        toast.error(error.message)
+      } else if (isHttpError(error)) {
+        toast.error(error.body.message)
+      } else {
+        toast.error("Er is een onbekende fout opgetreden")
+      }
+      duties = await list()
+    }
+  }
 </script>
 
 <div class="grid gap-4">
@@ -73,12 +119,98 @@
     </Card.Content>
   </Card.Root>
 
-  <Card.Root class="w-fit">
-    <Card.Header>
-      <Card.Title>Voorraad</Card.Title>
-    </Card.Header>
-    <Card.Content>
-      <iframe title="Voorraad" width="621" height="170" src="https://pcrolin-my.sharepoint.com/personal/info_pcrolin_nl/_layouts/15/Doc.aspx?sourcedoc={'{c9f86c31-ea5b-45ed-a47e-c44875f9e558}'}&action=embedview&wdAllowInteractivity=False&Item=Tabel2&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>
-    </Card.Content>
-  </Card.Root>
+  <div class="flex gap-4">
+    <Card.Root class="w-fit">
+      <Card.Header>
+        <Card.Title>Voorraad</Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <iframe title="Voorraad" width="621" height="170" src="https://pcrolin-my.sharepoint.com/personal/info_pcrolin_nl/_layouts/15/Doc.aspx?sourcedoc={'{c9f86c31-ea5b-45ed-a47e-c44875f9e558}'}&action=embedview&wdAllowInteractivity=False&Item=Tabel2&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>
+      </Card.Content>
+    </Card.Root>
+    <Card.Root class="w-full">
+      <Card.Header>
+        <Card.Title class="flex items-center gap-2 text-lg font-medium">
+          <Phone/>
+          Telefoondiensten
+        </Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <div class="grid grid-cols-2 items-center gap-2 mt-2">
+          {#key duties}
+            {#each duties.slice(0, 3) as duty (duty.$id)}
+              {@const profile = profiles.find(profile => profile.$id === duty.agent)}
+              {#if data.user?.labels.includes("admin")}
+                <Input data-id={duty.$id} value={duty.name} onchange={onNameChange}/>
+              {:else}
+                <span class="font-medium">1e PC Rolin'</span>
+              {/if}
+              <div class="flex items-center gap-2">
+                {#if profile}
+                  <Avatar.Root class="size-8">
+                    <Avatar.Image src={data.aw.avatars.getInitials({ name: profile.name })} class="object-cover"/>
+                    <Avatar.Fallback>{profile.name.split(' ').map(v => v[0]).join('')}</Avatar.Fallback>
+                  </Avatar.Root>
+                {/if}
+                {#if data.user?.labels.includes("admin")}
+                  <Select options={profiles.map(profile => {
+                    return {
+                      label: profile.name,
+                      value: profile.$id
+                    }
+                  })} value={duty.agent} onValueChange={async value => {
+                    await onAgentChange(duty.$id, value)
+                  }}/>
+                {:else}
+                  <span>{profile?.name}</span>
+                {/if}
+              </div>
+            {/each}
+          {/key}
+        </div>
+      </Card.Content>
+    </Card.Root>
+    <Card.Root class="w-full">
+      <Card.Header>
+        <Card.Title class="flex items-center gap-2 text-lg font-medium">
+          <BellRing/>
+          Andere diensten
+        </Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <div class="grid grid-cols-2 items-center gap-2 mt-2">
+          {#key duties}
+            {#each duties.slice(3, 7) as duty (duty.$id)}
+              {@const profile = profiles.find(profile => profile.$id === duty.agent)}
+              {#if data.user?.labels.includes("admin")}
+                <Input data-id={duty.$id} value={duty.name} onchange={onNameChange}/>
+              {:else}
+                <span class="font-medium">{duty.name}</span>
+              {/if}
+              <div class="flex items-center gap-2">
+                {#if profile}
+                  <Avatar.Root class="size-8">
+                    <Avatar.Image src={data.aw.avatars.getInitials({ name: profile.name })} class="object-cover"/>
+                    <Avatar.Fallback>{profile.name.split(' ').map(v => v[0]).join('')}</Avatar.Fallback>
+                  </Avatar.Root>
+                {/if}
+                {#if data.user?.labels.includes("admin")}
+                  <Select options={profiles.map(profile => {
+                    return {
+                      label: profile.name,
+                      value: profile.$id
+                    }
+                  })} value={duty.agent} onValueChange={async value => {
+                    await onAgentChange(duty.$id, value)
+                  }}/>
+                {:else}
+                  <span>{profile?.name}</span>
+                {/if}
+              </div>
+            {/each}
+          {/key}
+        </div>
+      </Card.Content>
+    </Card.Root>
+  </div>
 </div>

@@ -15,6 +15,11 @@ export type Overstap = {
   comment: string | null
 }
 
+export type Duty = {
+  name: string
+  agent: string
+}
+
 export type Customer = {
   wticket: number
   name: string
