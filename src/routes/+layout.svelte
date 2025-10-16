@@ -27,4 +27,6 @@
 
 <Toaster/>
 
-{@render children()}
+<svelte:boundary>
+  {@render children()}
+</svelte:boundary>

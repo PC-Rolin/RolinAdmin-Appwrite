@@ -52,3 +52,17 @@ export const editCategory = form(z.object({
 
   return { message: "Categorie aangepast" }
 })
+
+export const deleteCategory = form(z.object({
+  id: z.string()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.deleteRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.PRICELIST_CATEGORIES,
+    rowId: data.id
+  })
+
+  return { message: "Categorie verwijderd" }
+})

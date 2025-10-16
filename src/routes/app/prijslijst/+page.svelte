@@ -1,7 +1,7 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
   import { Popover, buttonVariants, Table } from "$lib/components/ui"
-  import { Plus, SquarePen } from "@lucide/svelte"
+  import { Plus, SquarePen, Trash2 } from "@lucide/svelte"
   import { Field, Form, Modal } from "$lib/components/form"
   import * as pricelist from "$lib/remote/pricelist.remote"
 
@@ -47,17 +47,23 @@
         <Table.Cell colspan={4}>{category.name}</Table.Cell>
         {#if data.user?.labels.includes("admin")}
           <Table.Cell class="flex gap-4">
-            <Modal title="Categorie aanpassen" triggerClass={[buttonVariants({ variant: "secondary" })]} onOpenChange={open => {
-              if (open) pricelist.editCategory.fields.set({ id: category.$id, name: category.name })
-            }}>
+            <Modal title="Categorie aanpassen" triggerClass={buttonVariants({ variant: "secondary" })}>
               {#snippet trigger()}
                 <SquarePen/>
               {/snippet}
-              <Form form={pricelist.editCategory} disableSubmit={pricelist.editCategory.fields.name.value() === category.name}>
+              <Form form={pricelist.editCategory} data={category} disableSubmit={pricelist.editCategory.fields.name.value() === category.name}>
                 {#snippet children({ fields })}
-                  <input type="hidden" name="id" value={category.$id}>
+                  <input {...fields.id.as("hidden", category.$id)}/>
                   <Field field={fields.name} label="Naam" placeholder="Naam" required/>
                 {/snippet}
+              </Form>
+            </Modal>
+            <Modal title="Categorie verwijderen" triggerClass={buttonVariants({ variant: "destructive" })}>
+              {#snippet trigger()}
+                <Trash2/>
+              {/snippet}
+              <Form form={pricelist.deleteCategory} remove>
+                <input {...pricelist.deleteCategory.fields.id.as("hidden", category.$id)}/>
               </Form>
             </Modal>
           </Table.Cell>
