@@ -1,4 +1,4 @@
-import { Client, TablesDB, Query } from 'node-appwrite';
+import { Client, TablesDB, Query } from "node-appwrite";
 
 // noinspection JSUnusedGlobalSymbols
 /** @param {import("../../types").Context} context */
@@ -13,13 +13,16 @@ export default async context => {
 
   const user = /** @type {import("node-appwrite").Models.User<Preferences>} */ context.req.bodyJson
 
+  const transaction = await db.createTransaction()
+
   await db.updateRows({
     databaseId: "rolinadmin",
     tableId: "daily",
     data: {
       agent: null
     },
-    queries: [Query.equal("agent", user.$id)]
+    queries: [Query.equal("agent", user.$id)],
+    transactionId: transaction.$id
   })
 
   await db.updateRows({
@@ -28,7 +31,23 @@ export default async context => {
     data: {
       completedBy: null
     },
-    queries: [Query.equal("completedBy", user.$id)]
+    queries: [Query.equal("completedBy", user.$id)],
+    transactionId: transaction.$id
+  })
+
+  await db.updateRows({
+    databaseId: "rolinadmin",
+    tableId: "duties",
+    data: {
+      agent: null
+    },
+    queries: [Query.equal("agent", user.$id)],
+    transactionId: transaction.$id
+  })
+
+  await db.updateTransaction({
+    transactionId: transaction.$id,
+    commit: true
   })
 
   return context.res.empty()
