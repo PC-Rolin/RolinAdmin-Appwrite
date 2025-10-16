@@ -118,6 +118,14 @@
                     {/snippet}
                   </Form>
                 </Modal>
+                <Modal title="Prijs verwijderen" triggerClass={buttonVariants({ variant: "destructive" })}>
+                  {#snippet trigger()}
+                    <Trash2/>
+                  {/snippet}
+                  <Form form={pricelist.deletePrice} remove>
+                    <input {...pricelist.deletePrice.fields.id.as("hidden", price.$id)}/>
+                  </Form>
+                </Modal>
               </div>
             </Table.Cell>
           {/if}

@@ -30,7 +30,8 @@ export const listCategories = query(async () => {
     tableId: APPWRITE.PRICELIST_CATEGORIES,
     queries: [
       Query.limit(1000),
-      Query.select(["*", "prices.*"])
+      Query.select(["*", "prices.*"]),
+      Query.orderAsc("order")
     ]
   })
 
@@ -120,4 +121,18 @@ export const updatePrice = form(z.object({
   })
 
   return { message: "Prijs aangepast" }
+})
+
+export const deletePrice = form(z.object({
+  id: z.string()
+}), async data => {
+  const { locals } = getRequestEvent()
+
+  await locals.db.deleteRow({
+    databaseId: APPWRITE.DB,
+    tableId: APPWRITE.PRICELIST_PRICES,
+    rowId: data.id
+  })
+
+  return { message: "Prijs verwijderd" }
 })
