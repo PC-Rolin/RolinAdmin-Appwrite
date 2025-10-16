@@ -27,7 +27,37 @@ export const add = form(z.object({
 })
 
 export const remove = form(z.object({
-  $id: z.string()
+  id: z.string()
 }), async data => {
   const { users } = createAdminClient()
+
+  await users.delete({ userId: data.id })
+
+  return { message: "Gebruiker verwijderd" }
+})
+
+export const promote = form(z.object({
+  id: z.string()
+}), async data => {
+  const { users } = createAdminClient()
+
+  await users.updateLabels({
+    userId: data.id,
+    labels: ["admin"]
+  })
+
+  return { message: "Gebruiker gepromoveerd" }
+})
+
+export const demote = form(z.object({
+  id: z.string()
+}), async data => {
+  const { users } = createAdminClient()
+
+  await users.updateLabels({
+    userId: data.id,
+    labels: []
+  })
+
+  return { message: "Gebruiker gedegradeerd" }
 })

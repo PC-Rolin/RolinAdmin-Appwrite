@@ -1,9 +1,9 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
   import { Table, Avatar, buttonVariants } from "$lib/components/ui";
-  import { CircleCheck, CircleX, Plus, Trash2 } from "@lucide/svelte";
+  import { CircleCheck, CircleX, Plus, Trash2, CircleFadingArrowUp } from "@lucide/svelte";
   import { Form, Field, Modal } from "$lib/components/form";
-  import { list, add, remove } from "$lib/remote/admin/users.remote"
+  import { list, add, remove, promote, demote } from "$lib/remote/admin/users.remote"
 
   let { data } = $props()
 </script>
@@ -55,22 +55,29 @@
         </Table.Cell>
         <Table.Cell>
           {@const removeUser = remove.for(user.$id)}
-          {#if user.$id === data.user?.$id}
-            <i>Dit ben jij</i>
-          {:else}
-            <Modal title="{user.name === '' ? 'Gebruiker' : user.name} verwijderen" triggerClass={buttonVariants({ variant: "destructive" })} onOpenChange={open => {
-              removeUser.fields.$id.set(user.$id)
-            }}>
-              {#snippet trigger()}
-                <Trash2/>
-              {/snippet}
-              <Form form={removeUser}>
-                {#snippet children({ fields })}
-                  <Field field={fields.$id} as="hidden"/>
+          <div class="flex gap-2">
+            {#if user.$id === data.user?.$id}
+              <i>Dit ben jij</i>
+            {:else}
+              <Modal title={user.labels.includes("admin") ? `Admin rechten van ${user.name} verwijderen?` : `${user.name} admin rechten geven?`} triggerClass={buttonVariants({ variant: "outline" })}>
+                {#snippet trigger()}
+                  <CircleFadingArrowUp class={user.labels.includes("admin") ? "text-destructive rotate-180" : "text-green-800"}/>
                 {/snippet}
-              </Form>
-            </Modal>
-          {/if}
+                {@const form = user.labels.includes("admin") ? demote.for(user.$id) : promote.for(user.$id)}
+                <Form {form}>
+                  <input {...form.fields.id.as("hidden", user.$id)}/>
+                </Form>
+              </Modal>
+              <Modal title="{user.name === '' ? 'Gebruiker' : user.name} verwijderen" triggerClass={buttonVariants({ variant: "destructive" })}>
+                {#snippet trigger()}
+                  <Trash2/>
+                {/snippet}
+                <Form form={removeUser} remove>
+                  <input {...removeUser.fields.id.as("hidden", user.$id)}/>
+                </Form>
+              </Modal>
+            {/if}
+          </div>
         </Table.Cell>
       </Table.Row>
     {/each}
