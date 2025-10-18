@@ -1,9 +1,9 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
   import { Table, Avatar, buttonVariants } from "$lib/components/ui";
-  import { CircleCheck, CircleX, Plus, Trash2, CircleFadingArrowUp, RotateCcwKey } from "@lucide/svelte";
+  import { CircleCheck, CircleX, Plus, Trash2, CircleFadingArrowUp, RotateCcwKey, TextCursorInput } from "@lucide/svelte";
   import { Form, Field, Modal } from "$lib/components/form";
-  import { list, add, remove, promote, demote, resetPassword } from "$lib/remote/admin/users.remote"
+  import { list, add, remove, promote, demote, resetPassword, updateName } from "$lib/remote/admin/users.remote"
 
   let { data } = $props()
 </script>
@@ -58,9 +58,17 @@
             {#if user.$id === data.user?.$id}
               <i>Dit ben jij</i>
             {:else}
-              <Modal title="Naam veranderen">
+              <Modal title="Naam veranderen" triggerClass={buttonVariants({ variant: "outline" })}>
                 {#snippet trigger()}
+                  <TextCursorInput/>
                 {/snippet}
+                {@const form = updateName.for(user.$id)}
+                <Form {form} data={user}>
+                  {#snippet children({ fields })}
+                    <input {...fields.id.as("hidden", user.$id)}/>
+                    <Field field={fields.name} label="Naam" placeholder="Naam"/>
+                  {/snippet}
+                </Form>
               </Modal>
               <Modal title="Wachtwoord resetten" triggerClass={buttonVariants({ variant: "outline" })}>
                 {#snippet trigger()}
