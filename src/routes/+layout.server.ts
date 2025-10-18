@@ -11,8 +11,14 @@ export const load: LayoutServerLoad = async ({ locals, url, cookies }) => {
     if (!url.pathname.startsWith("/auth")) redirect(302, "/auth")
   }
 
+  const file = locals.user ? await locals.storage.getFile({
+    bucketId: "avatars",
+    fileId: locals.user.$id
+  }).catch(() => undefined) : undefined
+
   return {
     user: locals.user,
-    session: cookies.get(COOKIE)
+    session: cookies.get(COOKIE),
+    avatar: file ? locals.storage.getFilePreview({ bucketId: "avatars", fileId: file.$id }) : undefined
   }
 }

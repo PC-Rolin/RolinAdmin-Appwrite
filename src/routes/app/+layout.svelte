@@ -15,7 +15,11 @@
 
 {#snippet User(user: Models.User<Preferences>)}
   <Avatar.Root class="size-8 rounded-lg">
-    <Avatar.Image src={data.aw.avatars.getInitials({ name: user.name })}/>
+    {#if data.avatar}
+      <Avatar.Image src={data.avatar}/>
+    {:else}
+      <Avatar.Image src={data.aw.avatars.getInitials({ name: user.name })}/>
+    {/if}
     <Avatar.Fallback>{user.name.split(' ').map(v => v[0]).join('')}</Avatar.Fallback>
   </Avatar.Root>
   <div class="grid flex-1 text-left text-sm leading-tight">

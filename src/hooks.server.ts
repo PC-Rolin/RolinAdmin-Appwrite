@@ -1,6 +1,6 @@
 import type { Handle, HandleServerError, ServerInit } from "@sveltejs/kit";
 import { COOKIE, createClient } from "$lib/appwrite";
-import { Account, AppwriteException, TablesDB } from "appwrite";
+import { Account, AppwriteException, Storage, TablesDB } from "appwrite";
 import { z } from "zod";
 
 export const init: ServerInit = async () => {
@@ -12,6 +12,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 
   event.locals.account = new Account(client)
   event.locals.db = new TablesDB(client)
+  event.locals.storage = new Storage(client)
 
   try {
     event.locals.user = await event.locals.account.get()

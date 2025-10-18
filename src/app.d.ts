@@ -1,4 +1,4 @@
-import type { Account, Avatars, Client, Models, TablesDB } from "appwrite";
+import { type Account, type Avatars, type Client, type Models, Storage, type TablesDB } from "appwrite";
 import type { Breadcrumb } from "$lib/types";
 import type { Realtime } from "$lib/appwrite/realtime";
 
@@ -12,6 +12,7 @@ declare global {
 			user: Models.User<Preferences> | undefined
 			account: Account
 			db: TablesDB
+			storage: Storage
 		}
 		interface PageData {
 			user: Models.User<Preferences> | undefined

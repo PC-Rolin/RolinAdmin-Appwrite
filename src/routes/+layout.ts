@@ -9,6 +9,7 @@ export const load: LayoutLoad = async ({ data }) => {
 
   return {
     user: data.user,
+    avatar: data.avatar,
     aw: {
       client,
       avatars: new Avatars(client),
