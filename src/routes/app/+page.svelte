@@ -1,14 +1,15 @@
 <script lang="ts">
   // noinspection ES6UnusedImports
   import { Card, Avatar, Input } from "$lib/components/ui";
-  import type { Component } from "svelte";
+  import { type Component, onMount } from "svelte";
   import { Package, Phone, BellRing } from "@lucide/svelte";
   import { list, updateAgent, updateName } from "$lib/remote/duties.remote";
   import * as users from "$lib/remote/users.remote"
   import { Select } from "$lib/components/form";
-  import { AppwriteException } from "appwrite";
+  import { AppwriteException, type Models, type RealtimeResponseEvent } from "appwrite";
   import { toast } from "svelte-sonner";
   import { isHttpError } from "@sveltejs/kit";
+  import type { Duty } from "$lib/appwrite/types";
 
   let { data } = $props()
 
@@ -49,6 +50,20 @@
       title: "RolinClean"
     }
   ]
+
+  onMount(() => {
+    function isUpdateResponse(response: RealtimeResponseEvent<unknown>): response is RealtimeResponseEvent<Duty & Models.Row> {
+      return response.events.includes("databases.*.tables.*.rows.*.update")
+    }
+
+    data.realtime.subscribe("databases.rolinadmin.tables.duties.rows", async response => {
+      await users.list().refresh()
+      if (isUpdateResponse(response)) {
+        const index = duties.findIndex(duty => duty.$id === response.payload.$id)
+        duties[index] = response.payload
+      }
+    })
+  })
 
   async function onNameChange(event: Event) {
     event.preventDefault()
